@@ -1,5 +1,6 @@
 const HtmlWebpackPlugin = require('html-webpack-plugin');
 const ExtractTextPlugin = require('extract-text-webpack-plugin');
+const webpack = require('webpack');
 
 module.exports = {
   entry: [
@@ -69,11 +70,17 @@ module.exports = {
       filename: './index.html',
       hash: true,
     }),
+    new webpack.DefinePlugin({
+        API_SERVER_URL:
+            ((process.env.NODE_ENV == 'development')
+            ? JSON.stringify('http://localhost:1234')
+            : JSON.stringify('http://52.69.198.152:1234'))
+    })
   ],
 
   devServer: {
     historyApiFallback: true,
     publicPath: '/',
     contentBase: './dist',
-  },
+  }
 };

@@ -38,7 +38,7 @@ class Form extends React.Component {
         const token = sessionStorage.getItem('jwtToken');
 
         if(!postToEdit) {
-            return axios.post('http://localhost:8000/api/post', {
+            return axios.post(API_SERVER_URL+'/api/post', {
                 title: title,
                 contents: body,
                 token: token
@@ -46,7 +46,7 @@ class Form extends React.Component {
             .then((res) => onSubmit(res.data))
             .then(() => this.setState({ title: '', body: '' }));
         } else {
-            return axios.put(`http://localhost:8000/api/post/${postToEdit._id}`, {
+            return axios.put(`${API_SERVER_URL}/api/post/${postToEdit._id}`, {
                 title: title,
                 contents: body,
                 token: token

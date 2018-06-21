@@ -1,10 +1,11 @@
 import { createStore, combineReducers } from 'redux';
 
-import { admin, account } from './reducers';
+import { admin, account, post } from './reducers';
 
 const reducers = combineReducers({
     admin,
-    account
+    account,
+    post
 });
 
 const store = createStore(reducers);

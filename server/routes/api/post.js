@@ -42,10 +42,32 @@ router.post('/', (req, res) => {
 
 /*
  * GET POST: GET /api/post
+ * ERROR CODES:
+ *  1: INVALID ID
+ *  2: NO RESOURCE
  */
 router.get('/', (req, res) => {
-    // TODO
-    res.json({ success: true });
+    const id = req.query.id;
+
+    if(!mongoose.Types.ObjectId.isValid(id)) {
+        return res.json({
+            error: "INVALID ID",
+            code: 1
+        });
+    }
+
+    Posts.findById(id, (err, post) => {
+        if(err) throw err;
+
+        if(!post) {
+            res.json({
+                error: "NO RESOURCE",
+                code: 2
+            });
+        } else {
+            res.json(post);
+        }
+    });
 });
 
 /*

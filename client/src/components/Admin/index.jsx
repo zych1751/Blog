@@ -4,7 +4,7 @@ import { connect } from 'react-redux';
 import { Redirect } from 'react-router-dom';
 import sessionStorage from 'sessionstorage';
 
-import { Form } from '../../components/Post';
+import { PostForm } from '../../components/Post';
 
 class Admin extends React.Component {
     constructor(props) {
@@ -17,7 +17,7 @@ class Admin extends React.Component {
     componentDidMount() {
         const { onLoad } = this.props;
 
-        axios('http://localhost:8000/api/post/list').then((res) => {
+        axios(API_SERVER_URL+'/api/post/list').then((res) => {
             onLoad(res.data);
         });
     }
@@ -25,7 +25,7 @@ class Admin extends React.Component {
     handleDelete(id) {
         const { onDelete } = this.props;
 
-        return axios.delete(`http://localhost:8000/api/post/${id}`, {
+        return axios.delete(`${API_SERVER_URL}/api/post/${id}`, {
             token: sessionStorage.getItem('jwtToken')
         })
         .then(() => onDelete(id))
@@ -45,8 +45,8 @@ class Admin extends React.Component {
         const posts = (typeof this.props.posts === 'undefined') ? [] : this.props.posts;
 
         return (
-            <div className="container">
-                <Form />
+            <div>
+                <PostForm />
                 <div>
                     {posts.map((post) => {
                         return (
