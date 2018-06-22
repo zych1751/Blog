@@ -1,20 +1,24 @@
 const express = require('express');
 const mongoose = require('mongoose');
-const Posts = mongoose.model('Posts');
+const Post = mongoose.model('Post');
+const Category = mongoose.model('Category');
 
 const router = express.Router();
 
 /*
  * CREATE POST: POST /api/post
- * BODY SAMPLE: { title: "title", contents: "contents" }
+ * BODY SAMPLE: { title: "title", contents: "contents", category: "animal", subCategory: "cat" }
  * ERROR CODES:
  *  1: EMPTY TITLE
  *  2: EMPTY CONTENTS
+ *  3: CATEGORY DO NOT EXIST
  */
 
 router.post('/', (req, res) => {
     const title = req.body.title;
     const contents = req.body.contents;
+    const categoryName = req.body.category;
+    const subCategory = req.body.subCategory;
 
     if(typeof title !== 'string' || title === "") {
         return res.status(400).json({
@@ -28,15 +32,31 @@ router.post('/', (req, res) => {
         });
     }
 
-    let post = new Posts({
-        title: title,
-        writer: req.decoded.username,
-        contents: req.body.contents
-    });
+    if(typeof categoryName !== 'string' || categoryName === "" || typeof subCategory !== "string" || subCategory === "") {
+        return res.status(400).json({
+            error: "CATEGORY DO NOT EXIST",
+            code: 3
+        });
+    }
 
-    post.save( err => {
-        if(err) throw err;
-        return res.json(post);
+    Category.findOne({ category: categoryName, subCategory: subCategory }, (err, category) => {
+        if(!category) {
+            return res.status(400).json({
+                error: "CATEGORY DO NOT EXIST",
+                code: 3
+            });
+        }
+
+        const post = new Post({
+            title: title,
+            contents: req.body.contents,
+            category: category._id
+        });
+
+        post.save( (err) => {
+            if(err) throw err;
+            return res.json(post);
+        });
     });
 });
 
@@ -56,7 +76,7 @@ router.get('/', (req, res) => {
         });
     }
 
-    Posts.findById(id, (err, post) => {
+    Post.findById(id, (err, post) => {
         if(err) throw err;
 
         if(!post) {
@@ -65,7 +85,12 @@ router.get('/', (req, res) => {
                 code: 2
             });
         } else {
-            res.json(post);
+            Category.findById(post.category, (err, category) => {
+                if(err) throw err;
+
+                post.category = category;
+                res.json(post);
+            });
         }
     });
 });
@@ -75,7 +100,7 @@ router.get('/', (req, res) => {
  */
 
 router.get('/list', (req, res) => {
-    Posts.find()
+    Post.find()
     .sort({ "_id": -1 })
     //.limit(6)
     .exec((err, posts) => {
@@ -101,7 +126,7 @@ router.delete('/:id', (req, res) => {
         });
     }
 
-    Posts.findById(id, (err, post) => {
+    Post.findById(id, (err, post) => {
         if(err) throw err;
 
         if(!post) {
@@ -111,7 +136,7 @@ router.delete('/:id', (req, res) => {
             });
         }
 
-        Posts.remove({_id: id}, err => {
+        Post.remove({_id: id}, err => {
             if(err) throw err;
             res.json(post);
         });
@@ -153,7 +178,7 @@ router.put('/:id', (req, res) => {
         });
     }
 
-    Posts.findById(id, (err, post) => {
+    Post.findById(id, (err, post) => {
         if(err) throw err;
 
         if(!post) {

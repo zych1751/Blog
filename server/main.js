@@ -38,6 +38,7 @@ mongoose.connect('mongodb://localhost/blog');
 // Add Model
 require('./models/post');
 require('./models/account');
+require('./models/category');
 // Add Route
 app.use(require('./routes'));
 

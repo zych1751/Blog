@@ -4,9 +4,9 @@ const bcrypt = require('bcryptjs');
 const Schema = mongoose.Schema;
 
 const Account = new Schema({
-    username: String,
-    password: String,
-    admin: Boolean,
+    username: { type: String, required: true },
+    password: { type: String, required: true },
+    admin: { type: Boolean, default: false },
     created: { type: Date, default: Date.now }
 });
 
@@ -18,4 +18,4 @@ Account.methods.validateHash = function(password) {
     return bcrypt.compareSync(password, this.password);
 };
 
-mongoose.model('Accounts', Account);
+mongoose.model('Account', Account);

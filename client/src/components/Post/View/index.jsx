@@ -22,11 +22,16 @@ class View extends React.Component {
     }
 
     render() {
-        const { title, contents } = this.props
+        const { title, contents } = this.props;
+        const category = this.props.category;
+
         return (
             <div className="post-view-container">
                 <div className="post-view-title">
                     {title}
+                    <div className="post-view-category">
+                    {category ? (category.category + " > " + category.subCategory) : null}
+                    </div>
                 </div>
                 <div className="post-view-contents">
                     <ReactMarkdown source={contents}/>
@@ -39,7 +44,8 @@ class View extends React.Component {
 const mapStateToProps = (state) => {
     return ({
         title: state.post.title,
-        contents: state.post.contents
+        contents: state.post.contents,
+        category: state.post.category
     });
 }
 

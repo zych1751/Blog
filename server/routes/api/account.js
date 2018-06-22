@@ -1,7 +1,7 @@
 const express = require('express');
 const router = express.Router();
 const mongoose = require('mongoose');
-const Accounts = mongoose.model('Accounts');
+const Account = mongoose.model('Account');
 const jwt = require('jsonwebtoken');
 
 /*
@@ -32,7 +32,7 @@ router.post('/signup', (req, res) => {
         });
     }
 
-    Accounts.findOne({ username: username }, (err, exist) => {
+    Account.findOne({ username: username }, (err, exist) => {
         if(err) throw err;
 
         if(exist) {
@@ -42,7 +42,7 @@ router.post('/signup', (req, res) => {
             });
         }
 
-        const account = new Accounts({
+        const account = new Account({
             username: username,
             password: password,
             admin: false
@@ -78,7 +78,7 @@ router.post('/signin', (req, res) => {
         });
     }
 
-    Accounts.findOne({ username: username }, (err, account) => {
+    Account.findOne({ username: username }, (err, account) => {
         if(err) throw err;
 
         if(!account || !account.validateHash(password)) {

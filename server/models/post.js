@@ -3,16 +3,13 @@ const mongoose = require('mongoose');
 const Schema = mongoose.Schema;
 
 const Post = new Schema({
-    title: String,
-    writer: String,
-    contents: String,
+    title: { type: String, required: true },
+    contents: { type: String, required: true },
     date: {
         created: { type: Date, default: Date.now },
         edited: { type: Date, default: Date.now }
-    }
-    /*
-     * TODO: tags, comments
-     */
+    },
+    category: { type: Schema.Types.ObjectId, ref: 'Category', required: true }
 });
 
-mongoose.model('Posts', Post);
+mongoose.model('Post', Post);

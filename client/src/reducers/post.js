@@ -9,7 +9,8 @@ export default (state={}, action) => {
             return {
                 ...state,
                 title: action.data.title,
-                contents: action.data.contents
+                contents: action.data.contents,
+                category: action.data.category
             };
         default:
             return state;

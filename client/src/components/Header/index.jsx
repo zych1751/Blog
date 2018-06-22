@@ -38,15 +38,15 @@ class Header extends React.Component {
         const loginTab = 
             ((this.props.login) ? 
             (<li className="navbar-item active">
-                <div className="nav-link header-item-2" onClick={this.handleLogout}>Logout</div>
+                <div className="nav-link header-item2" onClick={this.handleLogout}>Logout</div>
             </li>) :
             (<li className="navbar-item active">
-                <Link to="/login" className="nav-link header-item-2">Login</Link>
+                <Link to="/login" className="nav-link header-item2">Login</Link>
             </li>));
         const adminTab =
             ((this.props.admin) ?
             (<li className="navbar-item active">
-                <Link to="/admin" className="nav-link header-item-2">Admin</Link>
+                <Link to="/admin" className="nav-link header-item2">Admin</Link>
             </li>) :
             (null));
 
@@ -60,7 +60,7 @@ class Header extends React.Component {
                     </ul>
                 </div>
                 <div className="collapse navbar-collapse w-100 order-3 dual-collapse2">
-                    <ul className="navbar-nav ml-auto">
+                    <ul className="navbar-nav ml-auto header-item2-container">
                         {loginTab}
                         {adminTab}
                     </ul>

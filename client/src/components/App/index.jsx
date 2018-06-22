@@ -6,7 +6,7 @@ import './app.scss';
 
 const App = (props) => {
     return (
-        <div className="app container">
+        <div className="app">
             <Header />
             <Switch>
                 <Route exact path="/" component={Home} />
