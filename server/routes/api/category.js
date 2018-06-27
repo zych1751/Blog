@@ -51,4 +51,46 @@ router.post('/', (req, res) => {
     })
 });
 
+/*
+ * GET CATEGORY BY ID: GET /api/category?id=abcd
+ * ERROR CODES:
+ *  1: CATEGORY DO NOT EXIST
+ */
+
+router.get('/', (req, res) => {
+    const id = req.query.id;
+
+    if(typeof id !== "string") {
+        return res.status(400).json({
+            error: "CATEGORY DO NOT EXIST",
+            code: 1
+        });
+    }
+
+    Category.findOne({_id: id}, (err, category) => {
+        if(err) throw err;
+
+        if(!category) {
+            return res.status(400).json({
+                error: "CATEGORY DO NOT EXIST",
+                code: 1
+            });
+        }
+
+        res.json(category);
+    });
+});
+
+/*
+ * GET CATEGORY LIST: GET /api/category/list
+ */
+
+router.get('/list', (req, res) => {
+    Category.find({}, (err, categories) => {
+        if(err) throw err;
+
+        res.json(categories);
+    });
+});
+
 module.exports = router;

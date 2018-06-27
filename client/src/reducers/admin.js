@@ -33,6 +33,22 @@ export default (state={}, action) => {
                 }),
                 postToEdit: undefined
             }
+        case 'POST_FORM_LOAD':
+            return {
+                ...state,
+                categoryList: action.data
+            }
+
+        case 'ADMIN_CATEGORY_LOADED':
+            return {
+                ...state,
+                categoryList: action.data
+            };
+        case 'SUBMIT_CATEGORY':
+            return {
+                ...state,
+                categoryList: ([action.data].concat(state.categoryList))
+            };
         default:
             return state;
     }
