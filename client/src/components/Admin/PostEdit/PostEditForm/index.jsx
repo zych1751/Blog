@@ -85,14 +85,14 @@ class PostEditForm extends React.Component {
         const { title, body } = this.state;
         const { postToEdit, categoryList } = this.props;
 
-        const mainCategoryList = categoryList ? 
-            [...new Set(categoryList.map((item) => {
+        if(typeof categoryList === 'undefined') {
+            return null;
+        }
+
+        const mainCategoryList = [...new Set(categoryList.map((item) => {
                 return item.category
-            }))] :
-            [];
-        const subCategoryList = categoryList ?
-            [...new Set(categoryList.filter(item => this.state.category===item.category).map(item => item.subCategory))] :
-            [];
+            }))];
+        const subCategoryList = [...new Set(categoryList.filter(item => this.state.category===item.category).map(item => item.subCategory))]
 
         return (
             <div className="post-form-container">

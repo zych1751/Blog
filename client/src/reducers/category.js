@@ -1,0 +1,11 @@
+export default (state={}, action) => {
+    switch(action.type) {
+        case 'CATEGORY_LOADED':
+            return {
+                ...state,
+                list: action.data
+            };
+        default:
+            return state;
+    }
+};

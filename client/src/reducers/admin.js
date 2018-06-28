@@ -39,11 +39,6 @@ export default (state={}, action) => {
                 categoryList: action.data
             }
 
-        case 'ADMIN_CATEGORY_LOADED':
-            return {
-                ...state,
-                categoryList: action.data
-            };
         case 'SUBMIT_CATEGORY':
             return {
                 ...state,

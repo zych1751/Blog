@@ -8,10 +8,6 @@ import CategoryEditForm from './CategoryEditForm';
 
 class CategoryEdit extends React.Component {
 
-    constructor(props) {
-        super(props);
-    }
-
     componentDidMount() {
         const { onLoad } = this.props;
 
@@ -51,7 +47,7 @@ class CategoryEdit extends React.Component {
 
 const mapStateToProps = (state) => {
     return ({
-        categoryList: state.admin.categoryList,
+        categoryList: state.category.list,
         admin: state.account.admin
     });
 }
@@ -59,7 +55,7 @@ const mapStateToProps = (state) => {
 const mapDispatchToProps = (dispatch) => {
     return ({
         onLoad: (data) => {
-            return dispatch({ type: 'ADMIN_CATEGORY_LOADED', data });
+            return dispatch({ type: 'CATEGORY_LOADED', data });
         }
     });
 }

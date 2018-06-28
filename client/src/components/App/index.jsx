@@ -5,14 +5,16 @@ import { Home, Header, Login, Admin } from '../../components';
 import './app.scss';
 
 const App = (props) => {
+    const history = props.history;
+
     return (
         <div className="app">
             <Header />
             <Switch>
-                <Route exact path="/" component={Home} />
+                <Route history={history} exact path="/" component={Home} />
                 <Route path="/login" component={Login} />
                 <Route path="/admin" component={Admin} />
-                <Route path="/blog" component={Home} />
+                <Route history={history} path="/blog" component={Home} />
             </Switch>
         </div>
     );

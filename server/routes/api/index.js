@@ -9,7 +9,9 @@ router.delete('/post', adminAuthMiddleware);
 router.put('/post', adminAuthMiddleware);
 router.use('/post', require('./post'));
 
-router.use('/category', adminAuthMiddleware);
+router.post('/category', adminAuthMiddleware);
+router.delete('/category', adminAuthMiddleware);
+router.put('/category', adminAuthMiddleware);
 router.use('/category', require('./category'));
 
 module.exports = router;

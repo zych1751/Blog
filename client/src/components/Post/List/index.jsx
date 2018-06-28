@@ -8,10 +8,12 @@ class List extends React.Component {
     componentDidMount() {
         const { onLoad } = this.props;
 
-        axios.get(API_SERVER_URL+'/api/post/list')
-        .then((res) => {
-            onLoad(res.data);
-        });
+        if(typeof this.props.postList === "undefined") {
+            axios.get(API_SERVER_URL+'/api/post/list')
+            .then((res) => {
+                onLoad(res.data);
+            });
+        }
 
         this.handlePostChange = this.handlePostChange.bind(this);
     }

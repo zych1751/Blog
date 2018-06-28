@@ -100,13 +100,25 @@ router.get('/', (req, res) => {
  */
 
 router.get('/list', (req, res) => {
-    Post.find()
-    .sort({ "_id": -1 })
-    //.limit(6)
-    .exec((err, posts) => {
-        if(err) throw err;
-        res.json(posts);
-    });
+    const categoryId = req.query.categoryId;
+    console.log(categoryId);
+
+    if(typeof categoryId === "undefined") {
+        Post.find()
+        .sort({ "_id": -1 })
+        //.limit(6)
+        .exec((err, posts) => {
+            if(err) throw err;
+            res.json(posts);
+        });
+    } else {
+        Post.find({ "category": categoryId })
+        .sort({ "_id": -1 })
+        .exec((err, posts) => {
+            if(err) throw err;
+            res.json(posts);
+        });
+    }
 });
 
 /*
