@@ -5,6 +5,7 @@ import { Redirect } from 'react-router-dom';
 import sessionStorage from 'sessionstorage';
 
 import CategoryEditForm from './CategoryEditForm';
+import { CategoryList } from '../../Category';
 
 class CategoryEdit extends React.Component {
 
@@ -33,13 +34,7 @@ class CategoryEdit extends React.Component {
         return (
             <div>
                 <CategoryEditForm />
-                { categoryList.map((category) => {
-                    return (<div key={category._id}>
-                        {category.category}
-                        <br />
-                        {category.subCategory}
-                    </div>);
-                })}
+                <CategoryList />
             </div>
         );
     }

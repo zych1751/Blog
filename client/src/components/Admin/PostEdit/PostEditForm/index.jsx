@@ -2,6 +2,7 @@ import React from 'react';
 import axios from 'axios';
 import { connect } from 'react-redux';
 import sessionStorage from 'sessionstorage';
+import ReactMarkdown from 'react-markdown';
 import './PostEditForm.scss';
 
 class PostEditForm extends React.Component {
@@ -141,6 +142,9 @@ class PostEditForm extends React.Component {
                 { (typeof postToEdit !== 'undefined') ? 
                     <button className="btn btn-danger float-right post-form-button" disabled>Editing</button>
                     : null }
+                <div className="post-form input-group input-group-lg post-form-preview">
+                    <ReactMarkdown source={body}/>
+                </div>
             </div>
         );
     }

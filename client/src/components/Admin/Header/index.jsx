@@ -1,18 +1,18 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 
+import './Header.scss';
+
 class Header extends React.Component {
     render() {
         return (
-            <nav>
-                <ul>
-                    <li>
-                        <Link to="/admin"> PostEdit </Link>
-                    </li>
-                    <li>
-                        <Link to="/admin/category"> CategoryEdit </Link>
-                    </li>
-                </ul>
+            <nav className="admin-header">
+                <button className="btn btn-info admin-header-button">
+                    <Link to="/admin"> PostEdit </Link>
+                </button>
+                <button className="btn btn-info admin-header-button">
+                    <Link to="/admin/category"> CategoryEdit </Link>
+                </button>
             </nav>
         );
     }

@@ -25,6 +25,10 @@ class PostEdit extends React.Component {
     handleDelete(id) {
         const { onDelete } = this.props;
 
+        if(!confirm("지우시겠습니까?")) {
+            return;
+        }
+
         return axios.delete(`${API_SERVER_URL}/api/post/${id}`, {
             token: sessionStorage.getItem('jwtToken')
         })
