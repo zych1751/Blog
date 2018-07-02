@@ -22,6 +22,7 @@ class CategoryList extends Component {
                 categoryId: categoryId
             }
         }).then((res) => {
+            res.data["categoryId"] = categoryId;
             categorySelect(res.data);
             history.push('/blog');
         });

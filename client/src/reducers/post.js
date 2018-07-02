@@ -1,10 +1,17 @@
 export default (state={}, action) => {
     switch(action.type) {
         case 'POST_LIST_LOADED':
-            return {
+            const result = {
                 ...state,
-                list: action.data
-            };
+                list: action.data.posts,
+                currentPage: action.data.currentPage,
+                endPage: action.data.endPage,
+                postNumInPage: action.data.postNumInPage
+            }
+            if(typeof action.data.categoryId !== "undefined")
+                result["categoryId"] = action.data.categoryId;
+            return result;
+
         case 'POST_CHANGED':
             return {
                 ...state,

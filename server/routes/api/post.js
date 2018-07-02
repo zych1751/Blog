@@ -97,26 +97,60 @@ router.get('/', (req, res) => {
 
 /*
  * GET POST LIST: GET /api/post/list
+ * PARAMS: { "categoryId": "id", "page": 3 }
  */
 
 router.get('/list', (req, res) => {
     const categoryId = req.query.categoryId;
-    console.log(categoryId);
+    var page = Number(req.query.page);
+    const postNumInPage = 5;
 
     if(typeof categoryId === "undefined") {
-        Post.find()
-        .sort({ "_id": -1 })
-        //.limit(6)
-        .exec((err, posts) => {
-            if(err) throw err;
-            res.json(posts);
+        if(!Number.isInteger(page)) {
+            page = 1;
+        }
+
+        Post.count()
+        .exec((err, count) => {
+            const endPage = (((count - 1) / postNumInPage) >> 0) + 1;
+
+            Post.find()
+            .sort({ "_id": -1 })
+            .skip((page-1) * postNumInPage)
+            .limit(postNumInPage)
+            .exec((err, posts) => {
+                if(err) throw err;
+                res.json({
+                    posts: posts,
+                    currentPage: page,
+                    endPage: endPage,
+                    postNumInPage: postNumInPage
+                });
+            });
         });
     } else {
+        if(!Number.isInteger(page)) {
+            page = 1;
+        }
+
         Post.find({ "category": categoryId })
-        .sort({ "_id": -1 })
-        .exec((err, posts) => {
-            if(err) throw err;
-            res.json(posts);
+        .count()
+        .exec((err, count) => {
+            const endPage = (((count - 1) / postNumInPage) >> 0) + 1;
+
+            Post.find({ "category": categoryId })
+            .sort({ "_id": -1 })
+            .skip((page-1) * postNumInPage)
+            .limit(postNumInPage)
+            .exec((err, posts) => {
+                if(err) throw err;
+                res.json({
+                    posts: posts,
+                    currentPage: page,
+                    endPage: endPage,
+                    postNumInPage: postNumInPage
+                });
+            });
         });
     }
 });
