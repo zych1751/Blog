@@ -16,6 +16,7 @@ class List extends React.Component {
         }
 
         this.handlePostChange = this.handlePostChange.bind(this);
+        this.handlePageChange = this.handlePageChange.bind(this);
     }
 
     handlePostChange(postId) {
@@ -31,8 +32,31 @@ class List extends React.Component {
         });
     }
 
+    handlePageChange(num) {
+        const { categoryId, onLoad } = this.props;
+        const params = {
+            page: num,
+        };
+        if(typeof categoryId !== "undefined") {
+            params["categoryId"] = categoryId;
+        }
+
+        axios.get(API_SERVER_URL+'/api/post/list', {params: params})
+        .then((res) => {
+            onLoad(res.data);
+        });
+    }
+
     render() {
-        var { postList } = this.props;
+        let { postList } = this.props;
+        const { endPage } = this.props;
+        const pageNumberList = [];
+
+        if(typeof endPage !== "undefined") {
+            for(var i = 1; i <= this.props.endPage; i++) {
+                pageNumberList.push(i);
+            }
+        }
 
         if(typeof postList === "undefined") {
             postList = [];
@@ -50,6 +74,18 @@ class List extends React.Component {
                         })
                     }
                 </ul>
+                <nav>
+                    <ul className="pagination justify-content-center">
+                        {
+                            pageNumberList.map((num) => {
+                                const active = (num == this.props.currentPage) ? "active" : "";
+                                return (<li key={num} className={"page-item " + active}><a className="page-link" href="#" onClick={()=>this.handlePageChange(num)}>
+                                    {num}
+                                </a></li>);
+                            })
+                        }
+                    </ul>
+                </nav>
             </div>
         );
     }
@@ -57,7 +93,11 @@ class List extends React.Component {
 
 const mapStateToProps = (state) => {
     return ({
-        postList: state.post.list
+        postList: state.post.list,
+        currentPage: state.post.currentPage,
+        endPage: state.post.endPage,
+        postNumInPage: state.post.postNumInPage,
+        categoryId: state.post.categoryId
     });
 }
 
