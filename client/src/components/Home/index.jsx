@@ -9,7 +9,7 @@ class Home extends React.Component {
     constructor(props) {
         super(props);
 
-        if(props.location.pathname !== '/blog')
+        if(!props.location.pathname.startsWith('/blog'))
             props.history.push('/blog');
     }
 
