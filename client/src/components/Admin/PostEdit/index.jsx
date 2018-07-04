@@ -25,6 +25,10 @@ class PostEdit extends React.Component {
     handleDelete(id) {
         const { onDelete } = this.props;
 
+        if(!confirm("지우시겠습니까?")) {
+            return;
+        }
+
         return axios.delete(`${API_SERVER_URL}/api/post/${id}`, {
             token: sessionStorage.getItem('jwtToken')
         })
@@ -89,7 +93,7 @@ class PostEdit extends React.Component {
 
 const mapStateToProps = (state) => {
     return ({
-        posts: state.admin.posts,
+        posts: state.post.list,
         admin: state.account.admin
     });
 }
@@ -97,7 +101,7 @@ const mapStateToProps = (state) => {
 const mapDispatchToProps = (dispatch) => {
     return ({
         onLoad: (data) => {
-            return dispatch({ type: 'HOME_PAGE_LOADED', data });
+            return dispatch({ type: 'POST_LIST_LOADED', data });
         },
         onDelete: (id) => dispatch({ type: 'DELETE_POST', id }),
         setEdit: (post) => dispatch({ type: 'SET_EDIT', post })

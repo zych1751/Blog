@@ -2,6 +2,7 @@ import React from 'react';
 import axios from 'axios';
 import { connect } from 'react-redux';
 import sessionStorage from 'sessionstorage';
+
 import './CategoryEditForm.scss';
 
 class CategoryEditForm extends React.Component {
@@ -43,23 +44,27 @@ class CategoryEditForm extends React.Component {
 
         return (
             <div className="category-form-container">
-                <div className="category-form input-group input-group-lg">
-                    <input 
-                        onChange={(ev) => this.handleChangeField('category', ev)}
-                        value={category}
-                        placeholder="category" 
-                        className="form-control"
-                    />
+                <div className="category-form input-group input-group-lg admin-category-contents">
+                    <div className="col-5">
+                        <input 
+                            onChange={(ev) => this.handleChangeField('category', ev)}
+                            value={category}
+                            placeholder="category" 
+                            className="form-control"
+                        />
+                    </div>
                 </div>
-                <div className="category-form input-group input-group-lg">
-                    <input
-                        onChange={(ev) => this.handleChangeField('subCategory', ev)}
-                        value={subCategory}
-                        placeholder="subCategory" 
-                        className="form-control"
-                    />
+                <div className="category-form input-group input-group-lg admin-category-contents">
+                    <div className="col-5">
+                        <input
+                            onChange={(ev) => this.handleChangeField('subCategory', ev)}
+                            value={subCategory}
+                            placeholder="subCategory" 
+                            className="form-control"
+                        />
+                    </div>
                 </div>
-                <button onClick={this.handleSubmit} className="btn btn-secondary float-right category-form-button">Submit</button>
+                <button onClick={this.handleSubmit} className="btn btn-secondary category-form-button">Submit</button>
             </div>
         );
     }
