@@ -12,7 +12,7 @@ router.post('/upload', (req, res) => {
             })
         }, (files, callback) => {
             uploadImage.s3(files, (err, result) => {
-                callback(err, files);
+                callback(err, result);
             })
         }
     ];
