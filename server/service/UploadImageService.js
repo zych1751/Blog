@@ -32,7 +32,6 @@ Upload.formidable = (req, callback) => {
 };
 
 Upload.s3 = (files, callback) => {
-    console.log(files);
     params.Key = files[0].name;
     params.Body = require('fs').createReadStream(files[0].path);
     s3.upload(params, (err, result) => {

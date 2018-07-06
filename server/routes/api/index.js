@@ -14,7 +14,7 @@ router.delete('/category', adminAuthMiddleware);
 router.put('/category', adminAuthMiddleware);
 router.use('/category', require('./category'));
 
-//router.post('/image', adminAuthMiddleware);
+router.post('/image', adminAuthMiddleware);
 router.use('/image', require('./image'));
 
 module.exports = router;
