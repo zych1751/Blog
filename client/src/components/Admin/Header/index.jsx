@@ -13,6 +13,9 @@ class Header extends React.Component {
                 <button className="btn btn-info admin-header-button">
                     <Link to="/admin/category"> CategoryEdit </Link>
                 </button>
+                <button className="btn btn-info admin-header-button">
+                    <Link to="/admin/image-upload"> ImageUpload </Link>
+                </button>
             </nav>
         );
     }
