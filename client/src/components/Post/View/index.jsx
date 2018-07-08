@@ -1,7 +1,7 @@
 import React from 'react';
 import axios from 'axios';
 import { connect } from 'react-redux';
-import ReactMarkdown from 'react-markdown';
+import {MarkdownWithCodeHighlightView} from '../../Util';
 import './View.scss';
 
 class View extends React.Component {
@@ -34,7 +34,7 @@ class View extends React.Component {
                     </div>
                 </div>
                 <div className="post-view-contents">
-                    <ReactMarkdown source={contents}/>
+                    <MarkdownWithCodeHighlightView source={contents}/>
                 </div>
             </div>
         );
