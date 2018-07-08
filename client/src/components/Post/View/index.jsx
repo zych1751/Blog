@@ -24,6 +24,11 @@ class View extends React.Component {
     render() {
         const { title, contents } = this.props;
         const category = this.props.category;
+        if(!this.props.date)
+            return null;
+        const d = new Date(this.props.date);
+        const utc = d.getTime() + (d.getTimezoneOffset() * 60000);
+        const date = new Date(utc + (3600000*9)).toLocaleString(); // KST
 
         return (
             <div className="post-view-container">
@@ -31,6 +36,8 @@ class View extends React.Component {
                     {title}
                     <div className="post-view-category">
                     {category ? (category.category + " > " + category.subCategory) : null}
+                    <br/>
+                    <i className="far fa-calendar"></i>{" " + date}
                     </div>
                 </div>
                 <div className="post-view-contents">
@@ -45,7 +52,8 @@ const mapStateToProps = (state) => {
     return ({
         title: state.post.title,
         contents: state.post.contents,
-        category: state.post.category
+        category: state.post.category,
+        date: state.post.date
     });
 }
 

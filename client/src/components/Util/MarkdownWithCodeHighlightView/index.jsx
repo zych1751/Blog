@@ -11,12 +11,10 @@ const Code = (props) => {
         loader.lang = () => (System.import(`highlight.js/lib/languages/${props.language}`));
     }
 
-    console.log(props);
     let Cmp = Loadable.Map({
         loader: loader,
         render: (loaded, _) => {
             let { lang, Lowlight } = loaded;
-            console.log(lang);
             Lowlight = Lowlight.default;
             if(lang) {
                 lang = lang.default;
@@ -35,9 +33,6 @@ const Code = (props) => {
 const renderers = { code: Code };
 
 const MarkDown = (props) => {
-    console.log("hihi");
-    console.log(props);
-    console.log("hihi");
     return (<ReactMarkdown {...props} renderers={renderers} />);
 }
 
