@@ -17,7 +17,8 @@ export default (state={}, action) => {
                 ...state,
                 title: action.data.title,
                 contents: action.data.contents,
-                category: action.data.category
+                category: action.data.category,
+                date: action.data.date.created
             };
         default:
             return state;

@@ -37,6 +37,8 @@
     "prop-types": "^15.6.1",
     "react": "^16.4.1",
     "react-dom": "^16.4.1",
+    "react-loadable": "^5.4.0",
+    "react-lowlight": "^2.0.0",
     "react-markdown": "^3.3.4",
     "react-redux": "^5.0.7",
     "react-router-dom": "^4.3.1",
