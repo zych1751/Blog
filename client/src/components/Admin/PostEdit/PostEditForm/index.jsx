@@ -19,6 +19,7 @@ class PostEditForm extends React.Component {
         this.handleChangeField = this.handleChangeField.bind(this);
         this.handleSubmit = this.handleSubmit.bind(this);
         this.handleChangeCategory = this.handleChangeCategory.bind(this);
+        this.onUnload = this.onUnload.bind(this);
 
         const { onLoad } = this.props;
 
@@ -40,6 +41,19 @@ class PostEditForm extends React.Component {
                 subCategory: nextProps.postToEdit.subCategory
             });
         }
+    }
+
+    componentDidMount() {
+        window.addEventListener("beforeunload", this.onUnload);
+    }
+
+    componentWillUnmount() {
+        window.removeEventListener("beforeunload", this.onUnload);
+    }
+
+    onUnload(event) {
+        if(this.state.title !== '' || this.state.body !== '' || this.state.category !== '')
+            event.returnValue = "";
     }
 
     handleChangeField(key, event) {
