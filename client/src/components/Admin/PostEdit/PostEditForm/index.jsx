@@ -67,8 +67,11 @@ class PostEditForm extends React.Component {
                 subCategory: subCategory,
                 token: token
             })
-            .then((res) => onSubmit(res.data))
-            .then(() => this.setState({ title: '', body: '' , category: '', subCategory: ''}));
+            .then((res) => {
+                alert("작성되었습니다!");
+                this.setState({ title: '', body: '' , category: '', subCategory: ''});
+                onSubmit(res.data)
+            });
         } else {
             return axios.put(`${API_SERVER_URL}/api/post/${postToEdit._id}`, {
                 title: title,
@@ -77,8 +80,11 @@ class PostEditForm extends React.Component {
                 subCategory: subCategory,
                 token: token
             })
-            .then((res) => onEdit(res.data))
-            .then(() => this.setState({ title: '', body: '', category: '', subCategory: ''}));
+            .then((res) => {
+                alert("수정되었습니다!");
+                this.setState({ title: '', body: '', category: '', subCategory: ''})
+                onEdit(res.data)
+            });
         }
     }
 
