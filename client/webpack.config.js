@@ -74,7 +74,7 @@ module.exports = {
         API_SERVER_URL:
             ((process.env.NODE_ENV == 'development')
             ? JSON.stringify('http://localhost:1234')
-            : JSON.stringify('http://zychspace.com'))
+            : JSON.stringify('https://zychspace.com'))
     })
   ],
 
