@@ -4,11 +4,11 @@ import Loadable from "react-loadable";
 
 const Code = (props) => {
     const loader = {
-        Lowlight: () => (System.import("react-lowlight"))
+        Lowlight: () => (import("react-lowlight"))
     }
 
     if(props.language) {
-        loader.lang = () => (System.import(`highlight.js/lib/languages/${props.language}`));
+        loader.lang = () => (import(`highlight.js/lib/languages/${props.language}`));
     }
 
     let Cmp = Loadable.Map({
