@@ -30,7 +30,11 @@ const Code = (props) => {
     return (<Cmp />);
 };
 
-const renderers = { code: Code };
+const Img = (props) => {
+    return (<img className="post-view-image" src={props.src} />);
+};
+
+const renderers = { code: Code, image: Img };
 
 const MarkDown = (props) => {
     return (<ReactMarkdown {...props} renderers={renderers} />);
