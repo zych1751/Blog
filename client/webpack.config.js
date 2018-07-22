@@ -1,6 +1,7 @@
 const HtmlWebpackPlugin = require('html-webpack-plugin');
 const ExtractTextPlugin = require('extract-text-webpack-plugin');
 const webpack = require('webpack');
+const EncodingPlugin = require('webpack-encoding-plugin');
 
 module.exports = {
   entry: [
@@ -75,7 +76,10 @@ module.exports = {
             ((process.env.NODE_ENV == 'development')
             ? JSON.stringify('http://localhost:1234')
             : JSON.stringify('http://zychspace.com'))
-    })
+    }),
+    new EncodingPlugin({
+        encoding: 'iso-8859-1'
+    }),
   ],
 
   devServer: {
