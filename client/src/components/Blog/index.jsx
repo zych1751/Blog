@@ -2,9 +2,9 @@ import React from 'react';
 import { Route } from 'react-router-dom';
 import { PostList, PostView } from '../Post';
 import { CategoryList } from '../Category';
-import './Home.scss';
+import './Blog.scss';
 
-class Home extends React.Component {
+class Blog extends React.Component {
 
     constructor(props) {
         super(props);
@@ -29,4 +29,4 @@ class Home extends React.Component {
     }
 };
 
-export default Home;
+export default Blog;
