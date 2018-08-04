@@ -19,6 +19,7 @@ class PostEditForm extends React.Component {
         this.handleChangeField = this.handleChangeField.bind(this);
         this.handleSubmit = this.handleSubmit.bind(this);
         this.handleChangeCategory = this.handleChangeCategory.bind(this);
+        this.onUnload = this.onUnload.bind(this);
 
         const { onLoad } = this.props;
 
@@ -40,6 +41,19 @@ class PostEditForm extends React.Component {
                 subCategory: nextProps.postToEdit.subCategory
             });
         }
+    }
+
+    componentDidMount() {
+        window.addEventListener("beforeunload", this.onUnload);
+    }
+
+    componentWillUnmount() {
+        window.removeEventListener("beforeunload", this.onUnload);
+    }
+
+    onUnload(event) {
+        if(this.state.title !== '' || this.state.body !== '' || this.state.category !== '')
+            event.returnValue = "";
     }
 
     handleChangeField(key, event) {
@@ -67,8 +81,11 @@ class PostEditForm extends React.Component {
                 subCategory: subCategory,
                 token: token
             })
-            .then((res) => onSubmit(res.data))
-            .then(() => this.setState({ title: '', body: '' , category: '', subCategory: ''}));
+            .then((res) => {
+                alert("작성되었습니다!");
+                this.setState({ title: '', body: '' , category: '', subCategory: ''});
+                onSubmit(res.data)
+            });
         } else {
             return axios.put(`${API_SERVER_URL}/api/post/${postToEdit._id}`, {
                 title: title,
@@ -77,8 +94,11 @@ class PostEditForm extends React.Component {
                 subCategory: subCategory,
                 token: token
             })
-            .then((res) => onEdit(res.data))
-            .then(() => this.setState({ title: '', body: '', category: '', subCategory: ''}));
+            .then((res) => {
+                alert("수정되었습니다!");
+                this.setState({ title: '', body: '', category: '', subCategory: ''})
+                onEdit(res.data)
+            });
         }
     }
 

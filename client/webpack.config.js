@@ -75,11 +75,8 @@ module.exports = {
         API_SERVER_URL:
             ((process.env.NODE_ENV == 'development')
             ? JSON.stringify('http://localhost:1234')
-            : JSON.stringify('http://zychspace.com'))
-    }),
-    new EncodingPlugin({
-        encoding: 'iso-8859-1'
-    }),
+            : JSON.stringify('https://zychspace.com'))
+    })
   ],
 
   devServer: {
