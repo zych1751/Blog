@@ -35,7 +35,14 @@ class Login extends React.Component {
             sessionStorage.setItem('jwtToken', res.data.token);
             handleLogin(res.data);
         }).catch((err) => {
-            alert("아이디나 비밀번호가 틀렸습니다.");
+            console.log(err.response);
+            if(err.response.data.code == 1) {
+                // 아이디나 비밀번호가 틀렸습니다.
+                alert("\uC544\uC774\uB514\uB098 \uBE44\uBC00\uBC88\uD638\uAC00 \uD2C0\uB838\uC2B5\uB2C8\uB2E4.");
+            } else {
+                // 메일 인증을 해주세요.
+                alert('\uBA54\uC77C \uC778\uC99D\uC744 \uD574\uC8FC\uC138\uC694.');
+            }
         });
     }
 

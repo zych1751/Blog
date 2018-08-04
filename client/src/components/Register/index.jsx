@@ -68,7 +68,26 @@ class Register extends React.Component {
         if(!frontCheck)
             return;
 
-        alert("ok!");
+        axios.post(API_SERVER_URL+'/api/account/signup', {
+            username: username,
+            password: password,
+            email: email
+        }).then((res) => {
+            console.log(res);
+            // 회원가입이 완료되었습니다! 이메일 인증을 완료하신 후 로그인을 해주세요
+            alert('\uD68C\uC6D0\uAC00\uC785\uC774 \uC644\uB8CC\uB418\uC5C8\uC2B5\uB2C8\uB2E4! \uC774\uBA54\uC77C \uC778\uC99D\uC744 \uC644\uB8CC\uD558\uC2E0 \uD6C4 \uB85C\uADF8\uC778\uC744 \uD574\uC8FC\uC138\uC694');
+            this.props.history.push('/login');
+        }).catch((err) => {
+            // USERNAME EXISTS
+            if(err.response.data.code === 4) {
+                // 아이디가 중복됩니다.
+                this.setState({usernameFail: '\uC544\uC774\uB514\uAC00 \uC911\uBCF5\uB429\uB2C8\uB2E4.'});
+            } else if(err.response.data.code === 5) {
+                // 이메일이 중복됩니다.
+                this.setState({emailFail: '\uC774\uBA54\uC77C\uC774 \uC911\uBCF5\uB429\uB2C8\uB2E4.'});
+            }
+        });
+
     }
 
     render() {

@@ -7,7 +7,10 @@ const Account = new Schema({
     username: { type: String, required: true },
     password: { type: String, required: true },
     admin: { type: Boolean, default: false },
-    created: { type: Date, default: Date.now }
+    created: { type: Date, default: Date.now },
+    email: { type: String, required: true },
+    confirmed: { type: Boolean, default: false},
+    confirmCode: { type: String }
 });
 
 Account.methods.generateHash = function(password) {
@@ -16,6 +19,10 @@ Account.methods.generateHash = function(password) {
 
 Account.methods.validateHash = function(password) {
     return bcrypt.compareSync(password, this.password);
+};
+
+Account.methods.generateConfirmCode = function() {
+    return Math.random().toString(36).substring(2, 15) + Math.random().toString(36).substring(2, 15);
 };
 
 mongoose.model('Account', Account);
