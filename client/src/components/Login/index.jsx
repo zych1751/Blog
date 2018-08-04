@@ -3,6 +3,8 @@ import axios from 'axios';
 import { connect } from 'react-redux';
 import { Redirect } from 'react-router';
 import sessionStorage from 'sessionstorage';
+import { Link } from 'react-router-dom';
+import './Login.scss';
 
 class Login extends React.Component {
     constructor(props) {
@@ -33,7 +35,14 @@ class Login extends React.Component {
             sessionStorage.setItem('jwtToken', res.data.token);
             handleLogin(res.data);
         }).catch((err) => {
-            alert("아이디나 비밀번호가 틀렸습니다.");
+            console.log(err.response);
+            if(err.response.data.code == 1) {
+                // 아이디나 비밀번호가 틀렸습니다.
+                alert("\uC544\uC774\uB514\uB098 \uBE44\uBC00\uBC88\uD638\uAC00 \uD2C0\uB838\uC2B5\uB2C8\uB2E4.");
+            } else {
+                // 메일 인증을 해주세요.
+                alert('\uBA54\uC77C \uC778\uC99D\uC744 \uD574\uC8FC\uC138\uC694.');
+            }
         });
     }
 
@@ -45,23 +54,34 @@ class Login extends React.Component {
         const { username, password } = this.state;
 
         return (
-            <div className="container">
-                <div>
-                    <input 
-                        onChange={(ev) => this.handleChangeField('username', ev)}
-                        value={username}
-                        placeholder="id" 
-                    />
+            <div className="login-container">
+                <div className="login-container2">
+                    <div className="login-input-container">
+                        id <br />
+                        <input 
+                            onChange={(ev) => this.handleChangeField('username', ev)}
+                            value={username}
+                            className="login-input"
+                        />
+                    </div>
+                    <div className="login-input-container">
+                        password <br />
+                        <input 
+                            type="password" 
+                            onChange={(ev) => this.handleChangeField('password', ev)}
+                            value={password}
+                            className="login-input"
+                        />
+                    </div>
+                    <button className="login-button" onClick={()=>this.handleLogin()}>로그인</button>
+
+                    <div className="login-register-container">
+                        처음이신가요? &nbsp;
+                        <Link to="/register">
+                            회원가입
+                        </Link>
+                    </div>
                 </div>
-                <div>
-                    <input 
-                        type="password" 
-                        onChange={(ev) => this.handleChangeField('password', ev)}
-                        value={password}
-                        placeholder="password" 
-                    />
-                </div>
-                <button onClick={()=>this.handleLogin()}>로그인</button>
             </div>
         );
     }

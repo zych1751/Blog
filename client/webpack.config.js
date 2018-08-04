@@ -1,6 +1,7 @@
 const HtmlWebpackPlugin = require('html-webpack-plugin');
 const ExtractTextPlugin = require('extract-text-webpack-plugin');
 const webpack = require('webpack');
+const EncodingPlugin = require('webpack-encoding-plugin');
 
 module.exports = {
   entry: [

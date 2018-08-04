@@ -49,6 +49,14 @@ app.use((req, res, next) => {
     next(err);
 });
 
+// api key
+const fs = require('fs');
+const dotenv = require('dotenv');
+const envConfig = dotenv.parse(fs.readFileSync('sendgrid.env'));
+for(const k in envConfig) {
+    process.env[k] = envConfig[k];
+}
+
 if(!isProduction) {
     app.use((err, req, res) => {
         res.status(err.status || 500);
