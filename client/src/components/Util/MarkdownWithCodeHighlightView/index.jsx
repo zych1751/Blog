@@ -22,9 +22,7 @@ const Code = (props) => {
         loader: loader,
         render: (loaded, _) => {
             let { lang, Lowlight } = loaded;
-            Lowlight = Lowlight.default;
             if(lang) {
-                lang = lang.default;
                 Lowlight.registerLanguage(props.language, lang);
             }
             return <Lowlight language={props.language || ""} value={props.value || ""} />;
