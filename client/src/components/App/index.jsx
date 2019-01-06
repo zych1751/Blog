@@ -1,7 +1,7 @@
 import React from 'react';
 import { Switch, Route } from 'react-router-dom';
 
-import { Blog, Header, Login, Admin, Register, Confirm } from '../../components';
+import { Blog, Header, Login, Admin, Register, Confirm, Footer } from '../../components';
 
 const App = (props) => {
   return (
@@ -15,6 +15,7 @@ const App = (props) => {
         <Route path="/admin" component={Admin} />
         <Route path="/confirm/:username/:code" component={Confirm} />
       </Switch>
+      <Footer />
     </div>
   );
 };
