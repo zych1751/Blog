@@ -3,85 +3,86 @@ const ExtractTextPlugin = require('extract-text-webpack-plugin');
 const webpack = require('webpack');
 const EncodingPlugin = require('webpack-encoding-plugin');
 
-module.exports = {
-  entry: [
-    'babel-polyfill',
-    './src/index.js',
-  ],
+module.exports = (env, options) => {
+  return {
+    entry: [
+      'babel-polyfill',
+      './src/index.js',
+    ],
 
-  output: {
-    publicPath: '/',
-    filename: './main.js',
-  },
+    output: {
+      publicPath: '/',
+      filename: './main.js',
+    },
 
-  resolve: {
-    extensions: ['.js', '.jsx'],
-  },
+    resolve: {
+      extensions: ['.js', '.jsx'],
+    },
 
-  module: {
-    rules: [
-      {
-        test: /\.(js|jsx)$/,
-        exclude: /node_modules/,
-        use: ['babel-loader'],
-      },
+    module: {
+      rules: [
+        {
+          test: /\.(js|jsx)$/,
+          exclude: /node_modules/,
+          use: ['babel-loader'],
+        },
 
-      {
-        test: /\.(jpe?g|png|gif|svg)$/i,
-        use: {
+        {
+          test: /\.(jpe?g|png|gif|svg)$/i,
+          use: {
+            loader: 'file-loader',
+            options: {
+              name: 'public/img/[name].[ext]',
+              outputPath: 'dist/img/',
+            },
+          },
+        },
+
+        {
+          test: /\.(scss)$/,
+          use: ExtractTextPlugin.extract({
+            fallback: 'style-loader',
+            use: [{loader: 'css-loader', options: {minimize: true}}, 'sass-loader'],
+          }),
+        },
+        {
+          test: /\.html$/,
+          use: {
+            loader: 'html-loader',
+            options: {
+              minimize: true,
+            },
+          },
+        },
+        {
+          test: /\.(otf|ttf|eot|woff|woff2)$/,
           loader: 'file-loader',
           options: {
-            name: 'public/img/[name].[ext]',
-            outputPath: 'dist/img/',
+            name: 'public/fonts/[name].[ext]',
+            outputPath: 'dist/fonts',
           },
         },
-      },
+      ],
+    },
 
-      {
-        test: /\.scss$/,
-        use: ExtractTextPlugin.extract({
-          fallback: 'style-loader',
-          use: [{ loader: 'css-loader', options: { minimize: true } }, 'sass-loader'],
-        }),
-      },
-      {
-        test: /\.html$/,
-        use: {
-          loader: 'html-loader',
-          options: {
-            minimize: true,
-          },
-        },
-      },
-      {
-        test: /\.(otf|ttf|eot|woff|woff2)$/,
-        loader: 'file-loader',
-        options: {
-          name: 'public/fonts/[name].[ext]',
-          outputPath: 'dist/fonts',
-        },
-      },
-    ],
-  },
-
-  plugins: [
-    new ExtractTextPlugin({ filename: 'style.css' }),
-    new HtmlWebpackPlugin({
-      template: './resources/index.html',
-      filename: './index.html',
-      hash: true,
-    }),
-    new webpack.DefinePlugin({
+    plugins: [
+      new ExtractTextPlugin({filename: 'style.css'}),
+      new HtmlWebpackPlugin({
+        template: './resources/index.html',
+        filename: './index.html',
+        hash: true,
+      }),
+      new webpack.DefinePlugin({
         API_SERVER_URL:
-            ((process.env.NODE_ENV == 'development')
+          ((options.mode === 'development')
             ? JSON.stringify('http://localhost:1234')
             : JSON.stringify('https://zychspace.com'))
     })
   ],
-
-  devServer: {
-    historyApiFallback: true,
-    publicPath: '/',
-    contentBase: './dist',
-  }
+    devServer: {
+      historyApiFallback: true,
+      publicPath: '/',
+      contentBase: './dist',
+    }
+  };
 };

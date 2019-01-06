@@ -3,88 +3,111 @@ import { Link } from 'react-router-dom';
 import { connect } from 'react-redux';
 import axios from 'axios';
 import sessionStorage from 'sessionstorage';
-import './header.scss';
+import headerBackground from '../../clean-blog-templage/img/home-bg.jpg';
 
 class Header extends React.Component {
 
-    constructor(props) {
-        super(props);
+  constructor(props) {
+    super(props);
 
-        this.handleLogout = this.handleLogout.bind(this);
-    }
+    this.handleLogout = this.handleLogout.bind(this);
+  }
 
-    componentDidMount() {
-        const { onLoad } = this.props;
+  componentDidMount() {
+    const { onLoad } = this.props;
 
-        axios.get(API_SERVER_URL+'/api/account/info', {
-            params: {
-                token: sessionStorage.getItem('jwtToken')
-            }
-        }).then((res) => {
-            onLoad(res.data);
-        });
-    }
+    axios.get(API_SERVER_URL+'/api/account/info', {
+      params: {
+        token: sessionStorage.getItem('jwtToken')
+      }
+    }).then((res) => {
+      onLoad(res.data);
+    });
+  }
 
-    handleLogout() {
-        const { logout } = this.props;
+  handleLogout(e) {
+    e.preventDefault();
 
-        axios.post(API_SERVER_URL+'/api/account/logout').then(() => {
-            sessionStorage.removeItem('jwtToken');
-            logout();
-        });
-    }
+    const { logout } = this.props;
 
-    render() {
-        const loginTab = 
-            ((this.props.login) ? 
-            (<li className="navbar-item active">
-                <div className="nav-link header-item2" onClick={this.handleLogout}>Logout</div>
-            </li>) :
-            (<li className="navbar-item active">
-                <Link to="/login" className="nav-link header-item2">Login</Link>
-            </li>));
-        const adminTab =
-            ((this.props.admin) ?
-            (<li className="navbar-item active">
-                <Link to="/admin" className="nav-link header-item2">Admin</Link>
-            </li>) :
-            (null));
+    axios.post(API_SERVER_URL+'/api/account/logout').then(() => {
+      sessionStorage.removeItem('jwtToken');
+      logout();
+    });
+  }
 
-        return (
-            <nav className="header navbar navbar-expand-lg navbar-dark bg-dark">
-                <div className="collapse navbar-collapse w-100 order-1 order-md-0 dual-collapse2">
-                    <ul className="navbar-nav mr-auto">
-                        <li className="navbar-item active">
-                            <Link to="/blog" className="nav-link header-item">Blog</Link>
-                        </li>
-                    </ul>
+  render() {
+    const loginTab =
+      ((this.props.login) ?
+        (<li className="nav-item">
+          <a className="nav-link" href="#" onClick={this.handleLogout}>Logout</a>
+        </li>) :
+        (<li className="nav-item">
+          <Link to="/login" className="nav-link">Login</Link>
+        </li>));
+    const adminTab =
+      ((this.props.admin) ?
+        (<li className="nav-item">
+          <Link to="/admin" className="nav-link">Admin</Link>
+        </li>) :
+        (null));
+
+    const headerStyle = {
+      backgroundImage: "url(" + headerBackground + ")"
+    };
+
+    return (
+      <div>
+        <nav className="navbar navbar-expand-lg navbar-light fixed-top" id="mainNav">
+          <div className="container">
+            <Link to="/blog" className="navbar-brand">Blog</Link>
+            <button className="navbar-toggler navbar-toggler-right" type="button" data-toggle="collapse"
+                    data-target="#navbarResponsive" aria-controls="navbarResponsive" aria-expanded="false"
+                    aria-label="Toggle navigation">
+              Menu
+              <i className="fas fa-bars" />
+            </button>
+            <div className="collapse navbar-collapse" id="navbarResponsive">
+              <ul className="navbar-nav ml-auto">
+                {loginTab}
+                {adminTab}
+              </ul>
+            </div>
+          </div>
+        </nav>
+        <header className="masthead" style={headerStyle}>
+          <div className="overlay"></div>
+          <div className="container">
+            <div className="row">
+              <div className="col-lg-8 col-md-10 mx-auto">
+                <div className="site-heading">
+                  <h1>ZychSpace</h1>
+                  <span className="subheading">잡다한 개발, 게임, 일상 이야기</span>
                 </div>
-                <div className="collapse navbar-collapse w-100 order-3 dual-collapse2">
-                    <ul className="navbar-nav ml-auto header-item2-container">
-                        {loginTab}
-                        {adminTab}
-                    </ul>
-                </div>
-            </nav>
-        );
-    }
-};
+              </div>
+            </div>
+          </div>
+        </header>
+      </div>
+    );
+  }
+}
 
 const mapStateToProps = (state) => {
-    return ({
-        login: state.account.login,
-        admin: state.account.admin
-    });
-}
+  return ({
+    login: state.account.login,
+    admin: state.account.admin
+  });
+};
 
 const mapDispatchToProps = (dispatch) => {
-    return ({
-        onLoad: (data) => {
-            return dispatch({ type: 'HEADER_LOADED', data });
-        }, logout: () => {
-            return dispatch({ type: 'LOGOUT' });
-        }
-    });
-}
+  return ({
+    onLoad: (data) => {
+      return dispatch({ type: 'HEADER_LOADED', data });
+    }, logout: () => {
+      return dispatch({ type: 'LOGOUT' });
+    }
+  });
+};
 
 export default connect(mapStateToProps, mapDispatchToProps)(Header);

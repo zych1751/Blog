@@ -1,0 +1,3 @@
+module.exports = {
+    'jwtSecret': '1252385782752795'
+};
