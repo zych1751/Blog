@@ -19,7 +19,7 @@ class Blog extends React.Component {
         <div>
           <Switch>
             <Route path="/blog/:id" component={PostView} />
-            <Route path="/blog" component={PostList} />
+            <Route path="/blog" render={(props)=><PostList {...props}/>} />
           </Switch>
         </div>
       </div>

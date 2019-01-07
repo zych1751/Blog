@@ -8,10 +8,15 @@ export default (state={}, action) => {
         endPage: action.data.endPage,
         postNumInPage: action.data.postNumInPage
       };
-      if(typeof action.data.categoryId !== "undefined")
-        result["categoryId"] = action.data.categoryId;
+      if(typeof action.data.categoryId !== 'undefined')
+        result['categoryId'] = action.data.categoryId;
+      else if(typeof result.categoryId !== 'undefined')
+        delete result['categoryId'];
       if(typeof action.data.categoryName !== "undefined")
         result["categoryName"] = action.data.categoryName;
+      else if(typeof result.categoryName !== 'undefined')
+        delete result['categoryName'];
+
       return result;
     case 'POST_CHANGED':
       return {

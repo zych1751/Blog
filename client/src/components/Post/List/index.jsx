@@ -3,19 +3,15 @@ import axios from 'axios';
 import { connect } from 'react-redux';
 import { Route, Link } from 'react-router-dom';
 import './List.scss';
-import MarkdownWithCodeHighlightView from '../../Util/MarkdownWithCodeHighlightView';
 
 class List extends React.Component {
   componentDidMount() {
     const { onLoad } = this.props;
 
-    if(typeof this.props.postList === "undefined") {
-      axios.get(API_SERVER_URL+'/api/post/list')
-        .then((res) => {
-          onLoad(res.data);
-        });
-    }
-
+    axios.get(API_SERVER_URL+'/api/post/list')
+      .then((res) => {
+        onLoad(res.data);
+      });
     this.handlePostChange = this.handlePostChange.bind(this);
     this.handlePageChange = this.handlePageChange.bind(this);
   }
@@ -28,13 +24,13 @@ class List extends React.Component {
         id: postId
       }
     })
-      .then((res) => {
-        postChange(res.data);
-      });
+    .then((res) => {
+      postChange(res.data);
+    });
   }
 
   handlePageChange(num) {
-    const { categoryId, onLoad } = this.props;
+    const { categoryId, categoryName, onLoad } = this.props;
     const params = {
       page: num,
     };
@@ -44,6 +40,8 @@ class List extends React.Component {
 
     axios.get(API_SERVER_URL+'/api/post/list', {params: params})
       .then((res) => {
+        res.data["categoryId"] = categoryId;
+        res.data["categoryName"] = categoryName;
         onLoad(res.data);
       });
   }

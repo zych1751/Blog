@@ -11,6 +11,7 @@ class Header extends React.Component {
     super(props);
 
     this.handleLogout = this.handleLogout.bind(this);
+    this.postListInit = this.postListInit.bind(this);
   }
 
   componentDidMount() {
@@ -34,6 +35,14 @@ class Header extends React.Component {
       sessionStorage.removeItem('jwtToken');
       logout();
     });
+  }
+
+  postListInit() {
+    const { postListInit } = this.props;
+    axios.get(API_SERVER_URL+'/api/post/list')
+      .then((res) => {
+        postListInit(res.data);
+      });
   }
 
   render() {
@@ -60,7 +69,7 @@ class Header extends React.Component {
       <div>
         <nav className="navbar navbar-expand-lg navbar-light fixed-top" id="mainNav">
           <div className="container">
-            <Link to="/blog" className="navbar-brand">Blog</Link>
+            <Link to="/blog" className="navbar-brand" onClick={() => this.postListInit()}>Blog</Link>
             <button className="navbar-toggler navbar-toggler-right" type="button" data-toggle="collapse"
                     data-target="#navbarResponsive" aria-controls="navbarResponsive" aria-expanded="false"
                     aria-label="Toggle navigation">
@@ -106,6 +115,8 @@ const mapDispatchToProps = (dispatch) => {
       return dispatch({ type: 'HEADER_LOADED', data });
     }, logout: () => {
       return dispatch({ type: 'LOGOUT' });
+    }, postListInit: (data) => {
+      return dispatch({ type: 'POST_LIST_LOADED', data});
     }
   });
 };
