@@ -1,56 +1,77 @@
-.category-list {
-    margin-top: 5px;
-    background-color: white;
-    border-radius: 16px;
-    padding: 10px;
-}
+.category-list div.category-nav {
+  margin: 0 auto;
+  height: 36px;
+  font-size: 20px;
+  line-height: 1;
+  letter-spacing: -0.2px;
+  border-bottom: 1px solid #ddd;
 
-.category-list-item:hover {
-    text-decoration: underline;
-    cursor: pointer;
-}
+  ul.list-tab {
+    display: block;
+    margin-block-start: 1em;
+    margin-block-end: 1em;
+    margin-inline-start: 0px;
+    margin-inline-end: 0px;
+    padding-inline-start: 40px;
 
-.category-list ul{
-    margin-top: 10px;
-    list-style: none; line-height: 2em; font-family: Arial;
     li {
-        font-size: 16px;
-        position: relative;
-        &:before{
-            position: absolute;
-            left: -15px;
-            top: 0px;
-            content: '';
-            display: block;
-            border-left: 1px solid #ddd;
-            height: 1em;
-            border-bottom: 1px solid #ddd;
-            width: 10px;
-        }
-
-        &:after{
-            position: absolute;
-            left: -15px;
-            bottom: -7px;
-            content: '';
-            display: block;
-            border-left: 1px solid #ddd;
-            height: 100%;
-        }
-        
-      &.root{
-          margin: 0px 0px 0px -40px;
-          &:before{
-            display: none;
-          }
-
-          &:after{
-            display: none;
-          }
-       }
-
-       &:last-child{
-          &:after{ display: none }
-        }
+      float: left;
     }
+  }
+
+  .main-category-item {
+    font-size: 20px;
+    margin-right: 40px;
+
+    position: relative;
+    display: block;
+  }
+
+  .main-category-item.active {
+    font-weight: bold;
+  }
+
+  .main-category-item.active:before {
+    content: '';
+    display: block;
+    position: absolute;
+    bottom: -15px;
+    width: 100%;
+    height: 3px;
+    background-color: #33CCCC;
+  }
+
+  .main-category-item:hover {
+    cursor: pointer;
+  }
+
+  .main-category-item:hover:before {
+    content: '';
+    display: block;
+    position: absolute;
+    bottom: -15px;
+    width: 100%;
+    height: 3px;
+    background-color: #33CCCC;
+  }
+}
+
+.sub-category-list {
+  padding-top: 10px;
+  padding-bottom: 10px;
+
+  .sub-category-item:first-child {
+    margin-left: 30px;
+  }
+
+  .sub-category-item {
+    margin: 0 33px 0 0;
+    font-size: 18px;
+    line-height: 16px;
+  }
+
+  .sub-category-item:hover {
+    cursor: pointer;
+    text-decoration: underline;
+  }
 }

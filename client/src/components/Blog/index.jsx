@@ -2,31 +2,29 @@ import React from 'react';
 import { Route } from 'react-router-dom';
 import { PostList, PostView } from '../Post';
 import { CategoryList } from '../Category';
-import './Blog.scss';
 
 class Blog extends React.Component {
+  constructor(props) {
+    super(props);
 
-    constructor(props) {
-        super(props);
+    if(!props.location.pathname.startsWith('/blog'))
+      props.history.push('/blog');
+  }
 
-        if(!props.location.pathname.startsWith('/blog'))
-            props.history.push('/blog');
-    }
-
-    render() {
-        const { history } = this.props;
-        return (
-            <div className="container">
-                <div className="post">
-                    <Route history={history} path="/blog/:id" component={PostView} />
-                    <Route history={history} path="/blog" component={PostList} />
-                </div>
-                <div className="category">
-                    <CategoryList history={history} />
-                </div>
-            </div>
-        );
-    }
-};
+  render() {
+    const { history } = this.props;
+    return (
+      <div className="container">
+        <div>
+          <CategoryList />
+        </div>
+        <div>
+          <Route path="/blog/:id" component={PostView} />
+          <Route path="/blog" component={PostList} />
+        </div>
+      </div>
+    );
+  }
+}
 
 export default Blog;
