@@ -18,11 +18,8 @@
       float: left;
     }
   }
-
   .main-category-item {
     font-size: 20px;
-    margin-right: 40px;
-
     position: relative;
     display: block;
   }
@@ -73,5 +70,17 @@
   .sub-category-item:hover {
     cursor: pointer;
     text-decoration: underline;
+  }
+}
+
+@media(min-width: 992px) {
+  .main-category-item {
+    margin-right: 40px;
+  }
+}
+
+@media(max-width: 991px) {
+  .main-category-item {
+    margin-right: 10px;
   }
 }
