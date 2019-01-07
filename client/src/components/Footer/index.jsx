@@ -1,9 +1,9 @@
 import React from 'react';
+import './Footer.scss'
 
 const Footer = () => {
   return (
-    <div>
-      <hr />
+    <div className="footer">
       <footer>
         <div className="container">
           <div className="row">
@@ -12,24 +12,24 @@ const Footer = () => {
                 <li className="list-inline-item">
                   <a href="#">
                     <span className="fa-stack fa-lg">
-                      <i className="fas fa-circle fa-stack-2x"></i>
-                      <i className="fab fa-twitter fa-stack-1x fa-inverse"></i>
+                      <i className="fas fa-circle fa-stack-2x"/>
+                      <i className="fab fa-twitter fa-stack-1x fa-inverse"/>
                     </span>
                   </a>
                 </li>
                 <li className="list-inline-item">
                   <a href="#">
                     <span className="fa-stack fa-lg">
-                      <i className="fas fa-circle fa-stack-2x"></i>
-                      <i className="fab fa-facebook-f fa-stack-1x fa-inverse"></i>
+                      <i className="fas fa-circle fa-stack-2x"/>
+                      <i className="fab fa-facebook-f fa-stack-1x fa-inverse"/>
                     </span>
                   </a>
                 </li>
                 <li className="list-inline-item">
                   <a href="https://github.com/zych1751" target="_blank">
                     <span className="fa-stack fa-lg">
-                      <i className="fas fa-circle fa-stack-2x"></i>
-                      <i className="fab fa-github fa-stack-1x fa-inverse"></i>
+                      <i className="fas fa-circle fa-stack-2x"/>
+                      <i className="fab fa-github fa-stack-1x fa-inverse"/>
                     </span>
                   </a>
                 </li>

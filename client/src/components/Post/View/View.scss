@@ -1,33 +1,37 @@
 .post-view-container {
-    background-color: white;
-    padding-left: 30px;
-    padding-right: 30px;
-    padding-top: 20px;
-    border-radius: 16px;
+  background-color: white;
+  padding-left: 30px;
+  padding-right: 30px;
+  padding-top: 20px;
+  border-radius: 16px;
 }
 
 .post-view-title {
-    font-size: 40px;
-    border-bottom: 1px solid #aaa;
+  font-size: 40px;
+  border-bottom: 1px solid #aaa;
 }
 
 .post-view-category {
-    font-size: 20px;
-    text-align: right;
+  font-size: 20px;
+  text-align: right;
 }
 
 .post-view-contents {
-    margin-top: 20px;
-    font-size: 16px;
-    padding-bottom: 25px;
+  margin-top: 20px;
+  font-size: 16px;
+  padding-bottom: 25px;
+  line-height: 2.0;
+
+  p {
     line-height: 2.0;
+  }
 }
 
 pre {
-    background-color: #F5F5F5;
+  background-color: #F5F5F5;
 }
 
 .post-view-image {
-    display: inline;
-    max-width: 830px;
+  display: inline;
+  max-width: 830px;
 }

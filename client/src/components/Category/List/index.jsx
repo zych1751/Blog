@@ -22,7 +22,7 @@ class CategoryList extends Component {
     });
   }
 
-  handleCategoryChange(categoryId) {
+  handleCategoryChange(categoryId, categoryName) {
     const { categorySelect } = this.props;
 
     axios.get(API_SERVER_URL + '/api/post/list', {
@@ -31,6 +31,7 @@ class CategoryList extends Component {
       }
     }).then((res) => {
       res.data["categoryId"] = categoryId;
+      res.data["categoryName"] = categoryName;
       categorySelect(res.data);
       hist.push('/blog');
     });
@@ -63,8 +64,8 @@ class CategoryList extends Component {
         {subCategoryList.length > 0 ?
           (<div className="sub-category-list">
             {subCategoryList.map((item => {
-              return (<span key={item._id} className="sub-category-item" onClick={() => this.handleCategoryChange(item._id)}>
-              {'#' + item.subCategory}
+              return (<span key={item._id} className="sub-category-item" onClick={() => this.handleCategoryChange(item._id, item.subCategory)}>
+              {item.subCategory}
               </span>)
             }))}
           </div>) :
