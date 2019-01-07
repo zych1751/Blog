@@ -1,5 +1,5 @@
 import React from 'react';
-import { Route } from 'react-router-dom';
+import { Route, Switch } from 'react-router-dom';
 import { PostList, PostView } from '../Post';
 import { CategoryList } from '../Category';
 
@@ -12,15 +12,16 @@ class Blog extends React.Component {
   }
 
   render() {
-    const { history } = this.props;
     return (
       <div className="container">
         <div>
           <CategoryList />
         </div>
         <div>
-          <Route path="/blog/:id" component={PostView} />
-          <Route path="/blog" component={PostList} />
+          <Switch>
+            <Route path="/blog/:id" component={PostView} />
+            <Route path="/blog" component={PostList} />
+          </Switch>
         </div>
       </div>
     );
