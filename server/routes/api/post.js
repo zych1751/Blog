@@ -105,7 +105,7 @@ router.get('/', (req, res) => {
 router.get('/list', (req, res) => {
     const categoryId = req.query.categoryId;
     var page = Number(req.query.page);
-    const postNumInPage = 5;
+    const postNumInPage = 6;
 
     if(typeof categoryId === "undefined") {
         if(!Number.isInteger(page)) {
