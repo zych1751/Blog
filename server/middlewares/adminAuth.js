@@ -27,7 +27,7 @@ const authMiddleware = (req, res, next) => {
     };
 
     p.then((decoded) => {
-        req.decoded = decoded
+        req.decoded = decoded;
         if(decoded.admin) {
             next();
         } else {

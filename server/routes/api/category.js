@@ -2,6 +2,7 @@ const express = require('express');
 const router = express.Router();
 const mongoose = require('mongoose');
 const Category = mongoose.model('Category');
+const adminAuthMiddleware = require('../../middlewares/adminAuth');
 
 /*
  * ADD CATEGORY: POST /api/category/
@@ -12,6 +13,7 @@ const Category = mongoose.model('Category');
  *  3: CATEGORY EXIST
  */
 
+router.post('/', adminAuthMiddleware);
 router.post('/', (req, res) => {
     const categoryName = req.body.category;
     const subCategory = req.body.subCategory;

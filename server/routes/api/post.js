@@ -2,6 +2,7 @@ const express = require('express');
 const mongoose = require('mongoose');
 const Post = mongoose.model('Post');
 const Category = mongoose.model('Category');
+const adminAuthMiddleware = require('../../middlewares/adminAuth');
 
 const router = express.Router();
 
@@ -14,6 +15,7 @@ const router = express.Router();
  *  3: CATEGORY DO NOT EXIST
  */
 
+router.post('/', adminAuthMiddleware);
 router.post('/', (req, res) => {
     const title = req.body.title;
     const contents = req.body.contents;
@@ -162,8 +164,9 @@ router.get('/list', (req, res) => {
  *  2: NO RESOURCE
  */
 
+router.delete('/:id', adminAuthMiddleware);
 router.delete('/:id', (req, res) => {
-    const id = req.params.id
+    const id = req.params.id;
 
     if(!mongoose.Types.ObjectId.isValid(id)) {
         return res.json({
@@ -199,8 +202,9 @@ router.delete('/:id', (req, res) => {
  *  4. NO RESOURCE
  */
 
+router.put('/:id', adminAuthMiddleware);
 router.put('/:id', (req, res) => {
-    const id = req.params.id
+    const id = req.params.id;
 
     if(!mongoose.Types.ObjectId.isValid(id)) {
         return res.json({
