@@ -4,4 +4,4 @@ client/dist
 nohup.out
 
 .idea
-.package-lock.json
+package-lock.json
