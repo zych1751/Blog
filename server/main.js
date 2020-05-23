@@ -10,8 +10,6 @@ const config = require('./config');
 
 mongoose.promise = global.Promise;
 
-const isProduction = (process.env.NODE_ENV === 'production');
-
 const app = express();
 
 app.use(cors());
@@ -20,7 +18,7 @@ app.use(bodyParser.urlencoded({ extended: false }));
 app.use(bodyParser.json());
 app.use(express.static(path.join(__dirname, './../public')));
 app.use(session({
-    secret: "ebububebubu",
+    secret: config.sessionSecret,
     resave: false,
     saveUninitialized: false
 }));
@@ -49,27 +47,6 @@ app.use((req, res, next) => {
     next(err);
 });
 
-// api key
-const fs = require('fs');
-const dotenv = require('dotenv');
-const envConfig = dotenv.parse(fs.readFileSync('sendgrid.env'));
-for(const k in envConfig) {
-    process.env[k] = envConfig[k];
-}
-
-if(!isProduction) {
-    app.use((err, req, res) => {
-        res.status(err.status || 500);
-
-        res.json({
-            errors: {
-                message: err.message,
-                error: err
-            }
-        });
-    });
-}
-
 app.use((err, req, res) => {
     res.status(err.status || 500);
 
@@ -81,7 +58,7 @@ app.use((err, req, res) => {
     });
 });
 
-const port = 1234;
+const port = config.port;
 
 app.listen(port, () => {
     console.log("Server on");

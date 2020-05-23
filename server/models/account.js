@@ -8,9 +8,7 @@ const Account = new Schema({
     password: { type: String, required: true },
     admin: { type: Boolean, default: false },
     created: { type: Date, default: Date.now },
-    email: { type: String, required: true },
-    confirmed: { type: Boolean, default: false},
-    confirmCode: { type: String }
+    email: { type: String, required: true }
 });
 
 Account.methods.generateHash = function(password) {
