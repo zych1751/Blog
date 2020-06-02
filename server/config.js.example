@@ -1,4 +1,4 @@
-module.exports = {
+export default {
     'jwtSecret': '1252385782752795',
     'sessionSecret': '123132123213',
     'port': 1234

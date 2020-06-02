@@ -1,9 +1,9 @@
-const formidable = require('formidable');
-const AWS = require('aws-sdk');
+import { IncomingForm } from 'formidable';
+import { config, S3 } from 'aws-sdk';
 const Upload = {}
 
-AWS.config.region = 'ap-northeast-1';
-const s3 = new AWS.S3();
+config.region = 'ap-northeast-1';
+const s3 = new S3();
 
 const params = {
     Bucket: 'zychspace-image',
@@ -13,7 +13,7 @@ const params = {
 };
 
 Upload.formidable = (req, callback) => {
-    const form = new formidable.IncomingForm({
+    const form = new IncomingForm({
         encoding: 'utf-8',
         multiples: true,
         keepExtensions: false
@@ -40,4 +40,4 @@ Upload.s3 = (files, callback) => {
     });
 };
 
-module.exports = Upload;
+export default Upload;

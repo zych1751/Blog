@@ -1,8 +1,9 @@
-const express = require('express');
-const router = express.Router();
-const mongoose = require('mongoose');
-const Category = mongoose.model('Category');
-const adminAuthMiddleware = require('../../middlewares/adminAuth');
+import { Router } from 'express';
+import { model } from 'mongoose';
+import adminAuthMiddleware from '../../middlewares/adminAuth';
+
+const router = Router();
+const Category = model('Category');
 
 /*
  * ADD CATEGORY: POST /api/category/
@@ -95,4 +96,4 @@ router.get('/list', (req, res) => {
     });
 });
 
-module.exports = router;
+export default router;

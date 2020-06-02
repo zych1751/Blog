@@ -1,10 +1,10 @@
-const express = require('express');
-const mongoose = require('mongoose');
-const Post = mongoose.model('Post');
-const Category = mongoose.model('Category');
-const adminAuthMiddleware = require('../../middlewares/adminAuth');
+import { Router } from 'express';
+import { model, Types } from 'mongoose';
+import adminAuthMiddleware from '../../middlewares/adminAuth';
 
-const router = express.Router();
+const Post = model('Post');
+const Category = model('Category');
+const router = Router();
 
 /*
  * CREATE POST: POST /api/post
@@ -71,7 +71,7 @@ router.post('/', (req, res) => {
 router.get('/', (req, res) => {
     const id = req.query.id;
 
-    if(!mongoose.Types.ObjectId.isValid(id)) {
+    if(!Types.ObjectId.isValid(id)) {
         return res.json({
             error: "INVALID ID",
             code: 1
@@ -168,7 +168,7 @@ router.delete('/:id', adminAuthMiddleware);
 router.delete('/:id', (req, res) => {
     const id = req.params.id;
 
-    if(!mongoose.Types.ObjectId.isValid(id)) {
+    if(!Types.ObjectId.isValid(id)) {
         return res.json({
             error: "INVALID ID",
             code: 1
@@ -206,7 +206,7 @@ router.put('/:id', adminAuthMiddleware);
 router.put('/:id', (req, res) => {
     const id = req.params.id;
 
-    if(!mongoose.Types.ObjectId.isValid(id)) {
+    if(!Types.ObjectId.isValid(id)) {
         return res.json({
             error: "INVALID ID",
             code: 1
@@ -249,4 +249,4 @@ router.put('/:id', (req, res) => {
     });
 });
 
-module.exports = router;
+export default router;

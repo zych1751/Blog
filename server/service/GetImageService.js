@@ -1,6 +1,6 @@
-const AWS = require('aws-sdk');
-AWS.config.region = 'ap-northeast-1';
-const s3 = new AWS.S3();
+import { config, S3 } from 'aws-sdk';
+config.region = 'ap-northeast-1';
+const s3 = new S3();
 
 const params = {
     Bucket: 'zychspace-image',
@@ -16,4 +16,4 @@ GetImageService.s3 = (imageName, callback) => {
     });
 };
 
-module.exports = GetImageService;
+export default GetImageService;

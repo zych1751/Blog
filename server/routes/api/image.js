@@ -1,23 +1,24 @@
-const express = require('express');
-const router = express.Router();
-const uploadImage = require('../../service/UploadImageService');
-const getImage = require('../../service/GetImageService');
-const async = require('async');
+import { Router } from 'express';
+import { formidable, s3 } from '../../service/UploadImageService';
+import { s3 as _s3 } from '../../service/GetImageService';
+import { waterfall } from 'async';
+
+const router = Router();
 
 router.post('/upload', (req, res) => {
     const tasks = [
         (callback) => {
-            uploadImage.formidable(req, (err, files, field) => {
+            formidable(req, (err, files, field) => {
                 callback(err, files);
             })
         }, (files, callback) => {
-            uploadImage.s3(files, (err, result) => {
+            s3(files, (err, result) => {
                 callback(err, result);
             })
         }
     ];
 
-    async.waterfall(tasks, (err, result) => {
+    waterfall(tasks, (err, result) => {
         if(!err) {
             res.json({success: true});
         } else {
@@ -33,7 +34,7 @@ router.get('/:imageName', (req, res) => {
         res.json({success: false});
     }
 
-    getImage.s3(imageName, (err, image) => {
+    _s3(imageName, (err, image) => {
         if(err) {
             res.json({success: false});
         } else {
@@ -46,4 +47,4 @@ router.get('/:imageName', (req, res) => {
     });
 });
 
-module.exports = router;
+export default router;

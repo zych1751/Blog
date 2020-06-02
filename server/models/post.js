@@ -1,6 +1,6 @@
-const mongoose = require('mongoose');
+import { Schema as _Schema, model } from 'mongoose';
 
-const Schema = mongoose.Schema;
+const Schema = _Schema;
 
 const Post = new Schema({
     title: { type: String, required: true },
@@ -12,4 +12,4 @@ const Post = new Schema({
     category: { type: Schema.Types.ObjectId, ref: 'Category', required: true }
 });
 
-mongoose.model('Post', Post);
+model('Post', Post);

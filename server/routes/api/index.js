@@ -1,14 +1,19 @@
-const express = require('express');
-const router = express.Router();
-const adminAuthMiddleware = require('../../middlewares/adminAuth');
+import { Router } from 'express';
+import adminAuthMiddleware from '../../middlewares/adminAuth';
+import account from './account';
+import post from './post';
+import category from './category';
+import image from './image';
 
-router.use('/account', require('./account'));
+const router = Router();
 
-router.use('/post', require('./post'));
+router.use('/account', account);
 
-router.use('/category', require('./category'));
+router.use('/post', post);
+
+router.use('/category', category);
 
 router.post('/image', adminAuthMiddleware);
-router.use('/image', require('./image'));
+router.use('/image', image);
 
-module.exports = router;
+export default router;

@@ -1,26 +1,21 @@
-const mongoose = require('mongoose');
-const bcrypt = require('bcryptjs');
+import { Schema as _Schema, model } from 'mongoose';
+import { hashSync, compareSync } from 'bcryptjs';
 
-const Schema = mongoose.Schema;
+const Schema = _Schema;
 
 const Account = new Schema({
     username: { type: String, required: true },
     password: { type: String, required: true },
     admin: { type: Boolean, default: false },
     created: { type: Date, default: Date.now },
-    email: { type: String, required: true }
 });
 
 Account.methods.generateHash = function(password) {
-    return bcrypt.hashSync(password, 8);
+    return hashSync(password, 8);
 };
 
 Account.methods.validateHash = function(password) {
-    return bcrypt.compareSync(password, this.password);
+    return compareSync(password, this.password);
 };
 
-Account.methods.generateConfirmCode = function() {
-    return Math.random().toString(36).substring(2, 15) + Math.random().toString(36).substring(2, 15);
-};
-
-mongoose.model('Account', Account);
+export default model('Account', Account);

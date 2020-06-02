@@ -1,10 +1,10 @@
-const mongoose = require('mongoose');
+import { Schema as _Schema, model } from 'mongoose';
 
-const Schema = mongoose.Schema;
+const Schema = _Schema;
 
 const Category = new Schema({
     category: { type: String, required: true },
     subCategory: { type: String, require: true }
 });
 
-mongoose.model('Category', Category);
+model('Category', Category);

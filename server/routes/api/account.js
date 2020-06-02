@@ -1,8 +1,9 @@
-const express = require('express');
-const router = express.Router();
-const mongoose = require('mongoose');
-const Account = mongoose.model('Account');
-const jwt = require('jsonwebtoken');
+import { Router } from 'express';
+import { model } from 'mongoose';
+import { sign, verify } from 'jsonwebtoken';
+
+const router = Router();
+const Account = model('Account');
 
 /*
  * ACCOUNT SIGNIN: POST /api/account/signin
@@ -37,16 +38,7 @@ router.post('/signin', (req, res) => {
             });
         }
 
-        if(!account.confirmed) {
-            return res.status(401).json({
-                login: false,
-                admin: false,
-                error: "NOT CONFIRMED",
-                code: 2
-            });
-        }
-
-        jwt.sign(
+        sign(
             {
                 _id: account._id,
                 username: account.username,
@@ -85,7 +77,7 @@ router.get('/info', (req, res) => {
 
     const p = new Promise(
         (resolve, reject) => {
-            jwt.verify(token, req.app.get('jwtSecret'), (err, decoded) => {
+            verify(token, req.app.get('jwtSecret'), (err, decoded) => {
                 if(err) reject(err);
                 resolve(decoded);
             });
@@ -118,4 +110,4 @@ router.post('/logout', (req, res) => {
     res.json({ success: true });
 });
 
-module.exports = router;
+export default router;

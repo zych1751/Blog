@@ -1,22 +1,19 @@
-const path = require('path');
-const express = require('express');
-const bodyParser = require('body-parser');
-const session = require('express-session');
-const cors = require('cors');
-const errorHandler = require('errorhandler');
-const mongoose = require('mongoose');
-const morgan = require('morgan');
-const config = require('./config');
-
-mongoose.promise = global.Promise;
+import { join } from 'path';
+import express from 'express';
+import { urlencoded, json } from 'body-parser';
+import session from 'express-session';
+import cors from 'cors';
+import { connection, connect } from 'mongoose';
+import morgan from 'morgan';
+import config from './config';
 
 const app = express();
 
 app.use(cors());
 app.use(morgan('dev'));
-app.use(bodyParser.urlencoded({ extended: false }));
-app.use(bodyParser.json());
-app.use(express.static(path.join(__dirname, './../public')));
+app.use(urlencoded({ extended: false }));
+app.use(json());
+app.use(express.static(join(__dirname, './../public')));
 app.use(session({
     secret: config.sessionSecret,
     resave: false,
@@ -26,19 +23,22 @@ app.use(session({
 app.set('jwtSecret', config.jwtSecret);
 
 // DB Setting
-const db = mongoose.connection;
+const db = connection;
 db.on('error', console.error);
 db.once('open', () => {
     console.log('Connected to mongodb server');
 });
-mongoose.connect('mongodb://localhost/blog');
+connect('mongodb://localhost/blog', {
+    useNewUrlParser: true,
+    useUnifiedTopology: true,
+});
 
 // Add Model
-require('./models/post');
-require('./models/account');
-require('./models/category');
+import './models/post';
+import './models/account';
+import './models/category';
 // Add Route
-app.use(require('./routes'));
+app.use(require('./routes').default);
 
 // Error Handling
 app.use((req, res, next) => {
@@ -58,8 +58,6 @@ app.use((err, req, res) => {
     });
 });
 
-const port = config.port;
-
-app.listen(port, () => {
-    console.log("Server on");
+app.listen(config.port, () => {
+    console.log("Server on port:" + config.port);
 });
