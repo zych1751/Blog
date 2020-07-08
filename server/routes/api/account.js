@@ -1,9 +1,18 @@
 import { Router } from 'express';
-import { model } from 'mongoose';
 import { sign, verify } from 'jsonwebtoken';
+import { hashSync, compareSync } from 'bcryptjs';
+import mariaDB from '../../models/mariadbIndex';
 
 const router = Router();
-const Account = model('Account');
+const Account = mariaDB.Account;
+
+function generateHash(password) {
+    return hashSync(password, 8);
+}
+
+function validateHash(password, saltedPassword) {
+    return compareSync(password, saltedPassword);
+}
 
 /*
  * ACCOUNT SIGNIN: POST /api/account/signin
@@ -13,7 +22,7 @@ const Account = model('Account');
  *  2: NOT CONFIRMED
  */
 
-router.post('/signin', (req, res) => {
+router.post('/signin', async (req, res) => {
     const { username, password } = req.body;
     const secret = req.app.get('jwtSecret');
 
@@ -26,38 +35,40 @@ router.post('/signin', (req, res) => {
         });
     }
 
-    Account.findOne({ username: username }, (err, account) => {
-        if(err) throw err;
+    const account = await Account.findOne({
+        where: {
+            username: username
+        }
+    });
 
-        if(!account || !account.validateHash(password)) {
-            return res.status(401).json({
-                login: false,
-                admin: false,
-                error: "LOGIN FAIL",
-                code: 1
+    if(account === null || !validateHash(password, account.dataValues.password)) {
+        return res.status(401).json({
+            login: false,
+            admin: false,
+            error: "LOGIN FAIL",
+            code: 1
+        });
+    }
+
+    const accountData = account.dataValues;
+    sign(
+        {
+            username: accountData.username,
+            admin: accountData.admin
+        },
+        secret,
+        {
+            expiresIn: '7d',
+            subject: 'accountInfo'
+        },
+        (err, token) => {
+            res.json({
+                login: true,
+                admin: accountData.admin,
+                token: token
             });
         }
-
-        sign(
-            {
-                _id: account._id,
-                username: account.username,
-                admin: account.admin
-            },
-            secret,
-            {
-                expiresIn: '7d',
-                subject: 'accountInfo'
-            },
-            (err, token) => {
-                res.json({
-                    login: true,
-                    admin: account.admin,
-                    token: token
-                });
-            }
-        );
-    });
+    );
 });
 
 /*

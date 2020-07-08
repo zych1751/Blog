@@ -1,21 +1,17 @@
-import { Schema as _Schema, model } from 'mongoose';
-import { hashSync, compareSync } from 'bcryptjs';
-
-const Schema = _Schema;
-
-const Account = new Schema({
-    username: { type: String, required: true },
-    password: { type: String, required: true },
-    admin: { type: Boolean, default: false },
-    created: { type: Date, default: Date.now },
-});
-
-Account.methods.generateHash = function(password) {
-    return hashSync(password, 8);
+export default (sequelize, Sequelize) => {
+    const Account = sequelize.define('account', {
+        username: {
+            type: Sequelize.STRING,
+            primaryKey: true
+        },
+        password: {
+            type: Sequelize.STRING,
+            allowNull: false
+        },
+        admin: {
+            type: Sequelize.BOOLEAN,
+            defaultValue: false
+        }
+    });
+    return Account;
 };
-
-Account.methods.validateHash = function(password) {
-    return compareSync(password, this.password);
-};
-
-export default model('Account', Account);

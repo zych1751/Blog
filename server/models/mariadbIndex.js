@@ -1,5 +1,5 @@
 import Sequelize from 'sequelize';
-import MariadbAccount from './mariadbAccount';
+import MariadbAccount from './account';
 import MariadbCategory from './mariadbCategory';
 import MariadbPost from './mariadbPost';
 
