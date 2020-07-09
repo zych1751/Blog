@@ -1,6 +1,6 @@
 import Sequelize from 'sequelize';
 import MariadbAccount from './account';
-import MariadbCategory from './mariadbCategory';
+import MariadbCategory from './category';
 import MariadbPost from './mariadbPost';
 
 const mariadbDatabase = process.env.MARIADB_DATABASE;
@@ -32,6 +32,8 @@ const mariadbPost = MariadbPost(sequelize, Sequelize);
 
 // connection
 mariadbCategory.belongsTo(mariadbCategory, { as: 'parent', foreignKey: 'parent_id' });
+mariadbCategory.hasMany(mariadbCategory, { as: 'children', foreignKey: 'parent_id', onDelete: 'cascade' });
+
 mariadbCategory.hasMany(mariadbPost, { as: 'postsByMain', foreignKey: 'main_category_id', sourceKey: 'id', onDelete: 'cascade' });
 mariadbPost.belongsTo(mariadbCategory, { as: 'mainCategory', foreignKey: 'main_category_id', targetKey: 'id' });
 mariadbCategory.hasMany(mariadbPost, { as: 'postsBySub', foreignKey: 'sub_category_id', sourceKey: 'id', onDelete: 'cascade' });
@@ -45,5 +47,6 @@ const db = {}
 db.Account = mariadbAccount;
 db.Category = mariadbCategory;
 db.Post = mariadbPost;
+db.sequelize = sequelize;
 
 export default db;

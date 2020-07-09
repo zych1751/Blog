@@ -1,9 +1,10 @@
 import { Router } from 'express';
-import { model } from 'mongoose';
 import adminAuthMiddleware from '../../middlewares/adminAuth';
+import mariaDB from '../../models/mariadbIndex';
+import { QueryTypes } from 'sequelize';
 
 const router = Router();
-const Category = model('Category');
+const Category = mariaDB.Category;
 
 /*
  * ADD CATEGORY: POST /api/category/
@@ -12,12 +13,13 @@ const Category = model('Category');
  *  1: EMPTY CATEGORY
  *  2: EMPTY SUBCATEGORY
  *  3: CATEGORY EXIST
+ *  4: CANNOT CREATE CATEGORY (500)
  */
 
 router.post('/', adminAuthMiddleware);
-router.post('/', (req, res) => {
+router.post('/', async (req, res) => {
     const categoryName = req.body.category;
-    const subCategory = req.body.subCategory;
+    const subCategoryName = req.body.subCategory;
 
     if(typeof categoryName !== "string" || categoryName.length == 0) {
         return res.status(400).json({
@@ -25,33 +27,60 @@ router.post('/', (req, res) => {
             code: 1
         });
     }
-    if(typeof subCategory !== "string" || subCategory.length == 0) {
+    if(typeof subCategoryName !== "string" || subCategoryName.length == 0) {
         return res.status(400).json({
             error: "EMPTY SUBCATEGORY",
             code: 2
         });
     }
 
-    Category.findOne({ category: categoryName, subCategory: subCategory }, (err, exist) => {
-        if(err) throw err;
+    let category = await Category.findOne({ 
+        where: {
+            name: categoryName
+        }
+    });
 
-        if(exist) {
-            return res.status(409).json({
-                error: "CATEGORY EXIST",
-                code: 3
+    let subCategory = await Category.findOne({ 
+        where: {
+            name: subCategoryName
+        }
+    });
+
+    if(subCategory !== null) {
+        return res.status(409).json({
+            error: "CATEGORY EXIST",
+            code: 3
+        });
+    }
+
+    if(category === null) {
+        try {
+            category = await Category.create({
+                name: categoryName
+            });
+        } catch(err) {
+            return res.status(500).json({
+                error: "CANNOT CREATE CATEGORY",
+                code: 4
             });
         }
+    }
 
-        const category = new Category({
-            category: categoryName,
-            subCategory: subCategory
+    try {
+        subCategory = await Category.create({
+            name: subCategoryName
         });
-
-        category.save((err) => {
-            if(err) throw err;
-            res.json(category);
+        subCategory.setParent(category);
+    } catch(err) {
+        // TODO: transcation
+        return res.status(500).json({
+            error: "CANNOT CREATE CATEGORY"
         });
-    })
+    }
+    return res.json({
+        category: category,
+        subCategory: subCategory
+    });
 });
 
 /*
@@ -60,7 +89,7 @@ router.post('/', (req, res) => {
  *  1: CATEGORY DO NOT EXIST
  */
 
-router.get('/', (req, res) => {
+router.get('/', async (req, res) => {
     const id = req.query.id;
 
     if(typeof id !== "string") {
@@ -70,30 +99,52 @@ router.get('/', (req, res) => {
         });
     }
 
-    Category.findOne({_id: id}, (err, category) => {
-        if(err) throw err;
-
-        if(!category) {
-            return res.status(400).json({
-                error: "CATEGORY DO NOT EXIST",
-                code: 1
-            });
+    let category = await Category.findOne({ 
+        where: {
+            id: id
         }
-
-        res.json(category);
     });
+
+    if(category === null) {
+        return res.status(400).json({
+            error: "CATEGORY DO NOT EXIST",
+            code: 1
+        });
+    }
+
+    const parentCategory = await category.getParent();
+
+    if(parentCategory == null) {
+        return res.json({
+            category: category
+        });
+    } else {
+        return res.json({
+            category: parentCategory,
+            subCategory: category
+        });
+    }
 });
 
 /*
  * GET CATEGORY LIST: GET /api/category/list
  */
 
-router.get('/list', (req, res) => {
-    Category.find({}, (err, categories) => {
-        if(err) throw err;
-
-        res.json(categories);
+router.get('/list', async (_, res) => {
+    const categories = await mariaDB.sequelize.query("SELECT * FROM categories WHERE parent_id IS NULL", { 
+        type: QueryTypes.SELECT, 
+        model: mariaDB.Category
     });
+    const result = {categoryList: []};
+
+    for(const category of categories) {
+        result.categoryList.push({
+            category: category,
+            subCategoryList: await category.getChildren()
+        });
+    }
+
+    res.json(result);
 });
 
 export default router;
