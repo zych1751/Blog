@@ -1,7 +1,7 @@
 import { Router } from 'express';
 import { sign, verify } from 'jsonwebtoken';
 import { hashSync, compareSync } from 'bcryptjs';
-import mariaDB from '../../models/mariadbIndex';
+import mariaDB from '../../models';
 
 const router = Router();
 const Account = mariaDB.Account;

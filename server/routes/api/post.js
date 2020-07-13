@@ -1,26 +1,27 @@
 import { Router } from 'express';
-import { model, Types } from 'mongoose';
 import adminAuthMiddleware from '../../middlewares/adminAuth';
+import mariaDB from '../../models';
+import { isNormalInteger } from '../../utils/parser';
 
-const Post = model('Post');
-const Category = model('Category');
 const router = Router();
+const Category = mariaDB.Category;
+const Post = mariaDB.Post;
 
 /*
  * CREATE POST: POST /api/post
- * BODY SAMPLE: { title: "title", contents: "contents", category: "animal", subCategory: "cat" }
+ * BODY SAMPLE: { title: "title", contents: "contents", categoryId: 7 }
  * ERROR CODES:
  *  1: EMPTY TITLE
  *  2: EMPTY CONTENTS
  *  3: CATEGORY DO NOT EXIST
+ *  4: INTERNAL SERVER ERROR
  */
 
 router.post('/', adminAuthMiddleware);
-router.post('/', (req, res) => {
+router.post('/', async (req, res) => {
     const title = req.body.title;
     const contents = req.body.contents;
-    const categoryName = req.body.category;
-    const subCategory = req.body.subCategory;
+    const categoryId = req.body.categoryId;
 
     if(typeof title !== 'string' || title === "") {
         return res.status(400).json({
@@ -34,32 +35,53 @@ router.post('/', (req, res) => {
         });
     }
 
-    if(typeof categoryName !== 'string' || categoryName === "" || typeof subCategory !== "string" || subCategory === "") {
+    if(!Number.isInteger(categoryId)) {
         return res.status(400).json({
             error: "CATEGORY DO NOT EXIST",
             code: 3
         });
     }
 
-    Category.findOne({ category: categoryName, subCategory: subCategory }, (err, category) => {
-        if(!category) {
+    try {
+        const category = await Category.findOne({
+            where: {
+                id: categoryId
+            }
+        });
+
+        if(category === null) {
             return res.status(400).json({
                 error: "CATEGORY DO NOT EXIST",
                 code: 3
             });
         }
 
-        const post = new Post({
-            title: title,
-            contents: req.body.contents,
-            category: category._id
-        });
+        const parentCategory = await category.getParent();
 
-        post.save( (err) => {
-            if(err) throw err;
-            return res.json(post);
+        // 상위 카테고리에는 추가할 수 없게 함
+        if(parentCategory === null) {
+            return res.status(400).json({
+                error: "CATEGORY DO NOT EXIST",
+                code: 3
+            });
+        }
+
+        const post = await Post.create({
+            title: title,
+            contents: contents
         });
-    });
+        post.setMainCategory(parentCategory);
+        post.setSubCategory(category);
+
+        res.json({
+            post: post
+        });
+    } catch(err) {
+        res.status(500).json({
+            error: err,
+            code: 4
+        });
+    }
 });
 
 /*
@@ -67,94 +89,113 @@ router.post('/', (req, res) => {
  * ERROR CODES:
  *  1: INVALID ID
  *  2: NO RESOURCE
+ *  3: INTERNAL SERVER ERROR
  */
-router.get('/', (req, res) => {
-    const id = req.query.id;
-
-    if(!Types.ObjectId.isValid(id)) {
+router.get('/', async (req, res) => {
+    if(req.query.id === undefined || !isNormalInteger(req.query.id)) {
         return res.json({
             error: "INVALID ID",
             code: 1
         });
     }
 
-    Post.findById(id, (err, post) => {
-        if(err) throw err;
+    const id = Number.parseInt(req.query.id);
 
-        if(!post) {
+    try {
+        const post = await Post.findOne({
+            where: {
+                id: id
+            }
+        });
+
+        if(post === null) {
             res.json({
                 error: "NO RESOURCE",
                 code: 2
             });
-        } else {
-            Category.findById(post.category, (err, category) => {
-                if(err) throw err;
-
-                post.category = category;
-                res.json(post);
-            });
+            return;
         }
-    });
+
+        const mainCategory = await post.getMainCategory();
+        const subCategory = await post.getSubCategory();
+
+        res.json({
+            post: post,
+            category: {
+                mainCategory: mainCategory,
+                subCategory: subCategory
+            }
+        });
+    } catch(err) {
+        res.status(500).json({
+            error: err,
+            code: 3
+        });
+    }
 });
 
 /*
  * GET POST LIST: GET /api/post/list
- * PARAMS: { "categoryId": "id", "page": 3 }
+ * PARAMS: { "categoryId": 7, "page": 3 }
+ * ERROR CODES:
+ *  1: INVALID CATEGORY ID
+ *  2: INTERNAL SERVER ERROR
  */
 
-router.get('/list', (req, res) => {
-    const categoryId = req.query.categoryId;
-    var page = Number(req.query.page);
-    const postNumInPage = 6;
-
-    if(typeof categoryId === "undefined") {
-        if(!Number.isInteger(page)) {
-            page = 1;
-        }
-
-        Post.count()
-        .exec((err, count) => {
-            const endPage = (((count - 1) / postNumInPage) >> 0) + 1;
-
-            Post.find()
-            .sort({ "_id": -1 })
-            .skip((page-1) * postNumInPage)
-            .limit(postNumInPage)
-            .exec((err, posts) => {
-                if(err) throw err;
-                res.json({
-                    posts: posts,
-                    currentPage: page,
-                    endPage: endPage,
-                    postNumInPage: postNumInPage
-                });
-            });
-        });
+const postNumInPage = 6;
+router.get('/list', async (req, res) => {
+    let categoryId = req.query.categoryId;
+    let page = req.query.page;
+    if(!isNormalInteger(page)) {
+        page = 1;
     } else {
-        if(!Number.isInteger(page)) {
-            page = 1;
-        }
-
-        Post.find({ "category": categoryId })
-        .count()
-        .exec((err, count) => {
-            const endPage = (((count - 1) / postNumInPage) >> 0) + 1;
-
-            Post.find({ "category": categoryId })
-            .sort({ "_id": -1 })
-            .skip((page-1) * postNumInPage)
-            .limit(postNumInPage)
-            .exec((err, posts) => {
-                if(err) throw err;
-                res.json({
-                    posts: posts,
-                    currentPage: page,
-                    endPage: endPage,
-                    postNumInPage: postNumInPage
-                });
-            });
-        });
+        page = Number(page);
     }
+
+    const Op = mariaDB.Sequelize.Op;
+    let whereOption = {};
+    if(typeof categoryId === "undefined") {
+    } else if(!isNormalInteger(categoryId)) {
+        res.status(400).json({
+            error: "INVALID CATEGORY ID",
+            code: 1
+        });
+        return;
+    } else {
+        categoryId = Number(categoryId);
+        whereOption = {
+            [Op.or]: [{
+                main_category_id: categoryId
+            }, {
+                sub_category_id: categoryId
+            }]
+        }
+    }
+
+    const posts = await Post.findAndCountAll({
+        where: whereOption,
+        order: [
+            ['createdAt', 'DESC']
+        ],
+        include: [{
+            model: Category,
+            as: "mainCategory",
+        }, {
+            model: Category,
+            as: "subCategory",
+        }],
+        limit: postNumInPage,
+        offset: (page-1)*postNumInPage
+    });
+    console.log(posts);
+
+    const endPage = (((posts.count - 1) / postNumInPage) >> 0) + 1;
+    res.json({
+        posts: posts.rows,
+        currentPage: page,
+        endPage: endPage,
+        postNumInPage: postNumInPage
+    });
 });
 
 /*
@@ -165,31 +206,32 @@ router.get('/list', (req, res) => {
  */
 
 router.delete('/:id', adminAuthMiddleware);
-router.delete('/:id', (req, res) => {
-    const id = req.params.id;
-
-    if(!Types.ObjectId.isValid(id)) {
+router.delete('/:id', async (req, res) => {
+    if(req.params.id === undefined || !isNormalInteger(req.params.id)) {
         return res.json({
             error: "INVALID ID",
             code: 1
         });
     }
 
-    Post.findById(id, (err, post) => {
-        if(err) throw err;
+    const id = Number.parseInt(req.params.id);
 
-        if(!post) {
-            return res.status(404).json({
-                error: "NO RESOURCE",
-                code: 2
-            });
+    const post = await Post.findOne({
+        where: {
+            id: id
         }
-
-        Post.remove({_id: id}, err => {
-            if(err) throw err;
-            res.json(post);
-        });
     });
+
+    if(post === null) {
+        res.json({
+            error: "NO RESOURCE",
+            code: 2
+        });
+        return;
+    }
+
+    await post.destroy();
+    return res.json(post);
 });
 
 /*
@@ -203,14 +245,28 @@ router.delete('/:id', (req, res) => {
  */
 
 router.put('/:id', adminAuthMiddleware);
-router.put('/:id', (req, res) => {
-    const id = req.params.id;
-
-    if(!Types.ObjectId.isValid(id)) {
+router.put('/:id', async (req, res) => {
+    if(req.params.id === undefined || !isNormalInteger(req.params.id)) {
         return res.json({
             error: "INVALID ID",
             code: 1
         });
+    }
+
+    const id = Number.parseInt(req.params.id);
+
+    const post = await Post.findOne({
+        where: {
+            id: id
+        }
+    });
+
+    if(post === null) {
+        res.status(404).json({
+            error: "NO RESOURCE",
+            code: 4
+        });
+        return;
     }
 
     const title = req.body.title;
@@ -228,25 +284,10 @@ router.put('/:id', (req, res) => {
         });
     }
 
-    Post.findById(id, (err, post) => {
-        if(err) throw err;
-
-        if(!post) {
-            return res.status(404).json({
-                error: "NO RESOURCE",
-                code: 4
-            });
-        }
-
-        post.title = req.body.title;
-        post.contents = req.body.contents;
-        post.date.edited = new Date();
-
-        post.save((err, post) => {
-            if(err) throw err;
-            return res.json(post);
-        });
-    });
+    post.title = req.body.title;
+    post.contents = req.body.contents;
+    await post.save();
+    res.json(post);
 });
 
 export default router;

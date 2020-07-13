@@ -1,6 +1,6 @@
 import { Router } from 'express';
 import adminAuthMiddleware from '../../middlewares/adminAuth';
-import mariaDB from '../../models/mariadbIndex';
+import mariaDB from '../../models';
 import { QueryTypes } from 'sequelize';
 
 const router = Router();
@@ -34,13 +34,13 @@ router.post('/', async (req, res) => {
         });
     }
 
-    let category = await Category.findOne({ 
+    let category = await Category.findOne({
         where: {
             name: categoryName
         }
     });
 
-    let subCategory = await Category.findOne({ 
+    let subCategory = await Category.findOne({
         where: {
             name: subCategoryName
         }
@@ -99,7 +99,7 @@ router.get('/', async (req, res) => {
         });
     }
 
-    let category = await Category.findOne({ 
+    let category = await Category.findOne({
         where: {
             id: id
         }
