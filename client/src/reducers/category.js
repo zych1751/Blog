@@ -3,7 +3,7 @@ export default (state={}, action) => {
         case 'CATEGORY_LOADED':
             return {
                 ...state,
-                list: action.data
+                list: action.data.categoryList
             };
         default:
             return state;

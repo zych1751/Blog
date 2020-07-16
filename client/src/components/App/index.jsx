@@ -11,9 +11,7 @@ const App = (props) => {
         <Route exact path="/" component={Blog} />
         <Route path="/blog" component={Blog} />
         <Route path="/login" component={Login} />
-        <Route path="/register" component={Register} />
         <Route path="/admin" component={Admin} />
-        <Route path="/confirm/:username/:code" component={Confirm} />
       </Switch>
       <Footer />
     </div>

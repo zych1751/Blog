@@ -91,12 +91,6 @@ class Login extends React.Component {
               <div className="form-group">
                 <button className="btn btn-primary" onClick={()=>this.handleLogin()}>로그인</button>
               </div>
-              <div className="login-register-container">
-                처음이신가요? &nbsp;
-                <Link to="/register">
-                  회원가입
-                </Link>
-              </div>
             </form>
           </div>
         </div>

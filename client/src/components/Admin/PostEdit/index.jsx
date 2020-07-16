@@ -30,24 +30,26 @@ class PostEdit extends React.Component {
         }
 
         return axios.delete(`${API_SERVER_URL}/api/post/${id}`, {
-            token: sessionStorage.getItem('jwtToken')
+            data: {
+                token: sessionStorage.getItem('jwtToken')
+            }
         })
         .then(() => onDelete(id))
     }
 
-    handleEdit(post) {
+    async handleEdit(post) {
         const { setEdit } = this.props;
 
-        axios.get(API_SERVER_URL + '/api/category', {
+        const res = await axios.get(API_SERVER_URL + '/api/category', {
             params: {
-                id: post.category
+                id: post.subCategory.id
             }
-        }).then((res) => {
-            setEdit({
-                ...post,
-                category: res.data.category,
-                subCategory: res.data.subCategory
-            });
+        });
+
+        setEdit({
+            ...post,
+            category: res.data.category.name,
+            subCategory: res.data.subCategory.name
         });
     }
 
@@ -64,7 +66,7 @@ class PostEdit extends React.Component {
                 <div>
                     {posts.map((post) => {
                         return (
-                            <div key={post._id}>
+                            <div key={post.id}>
                                 <div>
                                     {post.title}
                                 </div>
@@ -72,13 +74,13 @@ class PostEdit extends React.Component {
                                     {post.contents}
                                 </div>
                                 <div>
-                                    {new Date(post.date.created).toLocaleDateString()}
+                                    {new Date(post.createdAt).toLocaleDateString()}
                                 </div>
                                 <div>
                                     <button onClick={() => this.handleEdit(post)}>
                                         Edit
                                     </button>
-                                    <button onClick={() => this.handleDelete(post._id)}>
+                                    <button onClick={() => this.handleDelete(post.id)}>
                                         Delete
                                     </button>
                                 </div>

@@ -8,7 +8,7 @@ export default (state={}, action) => {
         case 'POST_FORM_LOAD':
             return {
                 ...state,
-                categoryList: action.data
+                categoryList: action.data.categoryList
             }
         case 'EDIT_POST':
             return {

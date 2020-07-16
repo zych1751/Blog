@@ -14,9 +14,9 @@ class View extends React.Component {
         id: postId
       }
     })
-      .then((res) => {
-        postChange(res.data);
-      }).catch((err) => {
+    .then((res) => {
+      postChange(res.data);
+    }).catch((err) => {
       console.log(err);
     });
   }
@@ -30,12 +30,13 @@ class View extends React.Component {
     const utc = d.getTime() + (d.getTimezoneOffset() * 60000);
     const date = new Date(utc + (3600000*9)).toLocaleString(); // KST
 
+    console.log(contents);
     return (
       <div className="post-view-container">
         <div className="post-view-title">
           {title}
           <div className="post-view-category">
-            {category ? (category.category + " > " + category.subCategory) : null}
+            {category ? (category.mainCategory.name + " > " + category.subCategory.name) : null}
             <br/>
             <i className="far fa-calendar" />{" " + date}
           </div>

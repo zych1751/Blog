@@ -73,13 +73,13 @@ class List extends React.Component {
                 contents = contents.slice(0, 150) + '...';
               }
 
-              return (<div key={post._id} className="post-list-item">
-                <h4><Link to={`/blog/${post._id}`} onClick={()=>this.handlePostChange(post._id)}>{post.title}</Link></h4>
+              return (<div key={post.id} className="post-list-item">
+                <h4><Link to={`/blog/${post.id}`} onClick={()=>this.handlePostChange(post.id)}>{post.title}</Link></h4>
                 <div className="post-list-calendar">
-                  <i className="far fa-calendar" />{" " + post.date.created.slice(0, 10)}
+                  <i className="far fa-calendar" />{" " + post.createdAt.slice(0, 10)}
                 </div>
                 <div className="post-list-contents">
-                  <Link to={`/blog/${post._id}`} onClick={()=>this.handlePostChange(post._id)}>
+                  <Link to={`/blog/${post.id}`} onClick={()=>this.handlePostChange(post.id)}>
                     {contents}
                   </Link>
                 </div>

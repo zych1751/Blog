@@ -21,15 +21,15 @@ export default (state={}, action) => {
     case 'POST_CHANGED':
       return {
         ...state,
-        title: action.data.title,
-        contents: action.data.contents,
+        title: action.data.post.title,
+        contents: action.data.post.contents,
         category: action.data.category,
-        date: action.data.date.created
+        date: action.data.post.createdAt
       };
     case 'DELETE_POST':
       return {
         ...state,
-        list: state.list.filter((post) => (post._id !== action.id))
+        list: state.list.filter((post) => (post.id !== action.id))
       };
     case 'SUBMIT_POST':
       return {
@@ -40,7 +40,7 @@ export default (state={}, action) => {
       return {
         ...state,
         list: state.list.map((post) => {
-          if(post._id == action.data._id) {
+          if(post.id == action.data.id) {
             return {
               ...action.data
             };

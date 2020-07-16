@@ -19,6 +19,7 @@ class PostEditForm extends React.Component {
         this.handleChangeField = this.handleChangeField.bind(this);
         this.handleSubmit = this.handleSubmit.bind(this);
         this.handleChangeCategory = this.handleChangeCategory.bind(this);
+        this.handleChangeCategoryId = this.handleChangeCategoryId.bind(this);
         this.onUnload = this.onUnload.bind(this);
 
         const { onLoad } = this.props;
@@ -67,9 +68,18 @@ class PostEditForm extends React.Component {
         this.state.subCategory = "";
     }
 
+    handleChangeCategoryId(subCategoryList, event) {
+        subCategoryList.filter((item) => item.name === event.target.value);
+        if(subCategoryList.length > 0) {
+            this.setState({
+                categoryId: subCategoryList[0].id
+            });
+        }
+    }
+
     handleSubmit() {
         const { onSubmit, postToEdit, onEdit } = this.props;
-        const { title, body, category, subCategory } = this.state;
+        const { title, body, categoryId } = this.state;
 
         const token = sessionStorage.getItem('jwtToken');
 
@@ -77,21 +87,18 @@ class PostEditForm extends React.Component {
             return axios.post(API_SERVER_URL+'/api/post', {
                 title: title,
                 contents: body,
-                category: category,
-                subCategory: subCategory,
+                categoryId: categoryId,
                 token: token
             })
             .then((res) => {
                 alert("작성되었습니다!");
                 this.setState({ title: '', body: '' , category: '', subCategory: ''});
-                onSubmit(res.data)
+                onSubmit(res.data.post);
             });
         } else {
-            return axios.put(`${API_SERVER_URL}/api/post/${postToEdit._id}`, {
+            return axios.put(`${API_SERVER_URL}/api/post/${postToEdit.id}`, {
                 title: title,
                 contents: body,
-                category: category,
-                subCategory: subCategory,
                 token: token
             })
             .then((res) => {
@@ -111,9 +118,15 @@ class PostEditForm extends React.Component {
         }
 
         const mainCategoryList = [...new Set(categoryList.map((item) => {
-                return item.category
-            }))];
-        const subCategoryList = [...new Set(categoryList.filter(item => this.state.category===item.category).map(item => item.subCategory))]
+            return item.category
+        }))];
+        let subCategoryList = categoryList
+            .filter((item) => { return item.category.name === this.state.category})
+            .map((item) => item.subCategoryList);
+        if(subCategoryList.length > 0)
+            subCategoryList = subCategoryList[0];
+        else
+            subCategoryList = [];
 
         return (
             <div className="post-form-container">
@@ -125,18 +138,21 @@ class PostEditForm extends React.Component {
 
                             <option></option>
                             {mainCategoryList.map((item) => {
-                                return (<option key={item}>{item}</option>);
+                                return (<option key={item.id}>{item.name}</option>);
                             })}
                         </select>
                     </div>
                     <div className="col-2">
                         <select 
-                            onChange={(ev) => this.handleChangeField('subCategory', ev)}
+                            onChange={(ev) => {
+                                this.handleChangeField('subCategory', ev)
+                                this.handleChangeCategoryId(subCategoryList, ev)
+                            }}
                             className="form-control" value={this.state.subCategory}>
 
                             <option></option>
                             {subCategoryList.map((item) => {
-                                return (<option key={item}>{item}</option>);
+                                return (<option key={item.id}>{item.name}</option>);
                             })}
                         </select>
                     </div>

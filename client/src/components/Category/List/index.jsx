@@ -45,7 +45,9 @@ class CategoryList extends Component {
     const mainCategoryList = [...new Set(categoryList.map((item) => {
       return item.category;
     }))];
-    const subCategoryList = categoryList.filter((item) => { return item.category === this.state.mainCategory});
+    const subCategoryList = categoryList
+        .filter((item) => { return item.category === this.state.mainCategory})
+        .map((item) => item.subCategoryList);
 
     return (
       <div className="category-list">
@@ -53,19 +55,19 @@ class CategoryList extends Component {
           <ul className="list-tab">
           { mainCategoryList.map((mainCategory) => {
             return (
-              <li key={mainCategory} className={`main-category-item ${mainCategory===this.state.mainCategory?'active':''}`}
-                    onClick={() => {this.setState({mainCategory: mainCategory})}}>
-                {mainCategory}
+              <li key={mainCategory.id} className={`main-category-item ${mainCategory===this.state.mainCategory?'active':''}`}
+                  onClick={() => {this.setState({mainCategory: mainCategory})}}>
+                {mainCategory.name}
               </li>
             );
           })}
           </ul>
         </div>
-        {subCategoryList.length > 0 ?
+        {subCategoryList.length > 0 && subCategoryList[0].length > 0 ?
           (<div className="sub-category-list">
-            {subCategoryList.map((item => {
-              return (<span key={item._id} className="sub-category-item" onClick={() => this.handleCategoryChange(item._id, item.subCategory)}>
-              {item.subCategory}
+            {subCategoryList[0].map((item => {
+              return (<span key={item.id} className="sub-category-item" onClick={() => this.handleCategoryChange(item.id, item.name)}>
+                {item.name}
               </span>)
             }))}
           </div>) :
