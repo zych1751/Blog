@@ -1,7 +1,6 @@
 const HtmlWebpackPlugin = require('html-webpack-plugin');
-const ExtractTextPlugin = require('extract-text-webpack-plugin');
+const MiniCssExtractPlugin = require('mini-css-extract-plugin');
 const webpack = require('webpack');
-const EncodingPlugin = require('webpack-encoding-plugin');
 
 module.exports = (env, options) => {
   return {
@@ -40,10 +39,7 @@ module.exports = (env, options) => {
 
         {
           test: /\.(scss)$/,
-          use: ExtractTextPlugin.extract({
-            fallback: 'style-loader',
-            use: [{loader: 'css-loader', options: {minimize: true}}, 'sass-loader'],
-          }),
+          use: [MiniCssExtractPlugin.loader, 'css-loader', 'sass-loader'],
         },
         {
           test: /\.html$/,
@@ -66,7 +62,7 @@ module.exports = (env, options) => {
     },
 
     plugins: [
-      new ExtractTextPlugin({filename: 'style.css'}),
+      new MiniCssExtractPlugin(),
       new HtmlWebpackPlugin({
         template: './resources/index.html',
         filename: './index.html',
@@ -77,8 +73,8 @@ module.exports = (env, options) => {
           ((options.mode === 'development')
             ? JSON.stringify('http://localhost:1234')
             : JSON.stringify('https://zychspace.com'))
-    })
-  ],
+      })
+    ],
     devServer: {
       historyApiFallback: true,
       publicPath: '/',

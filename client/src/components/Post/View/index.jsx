@@ -30,7 +30,6 @@ class View extends React.Component {
     const utc = d.getTime() + (d.getTimezoneOffset() * 60000);
     const date = new Date(utc + (3600000*9)).toLocaleString(); // KST
 
-    console.log(contents);
     return (
       <div className="post-view-container">
         <div className="post-view-title">
