@@ -15,7 +15,7 @@ if(checkEmpty(mariadbDatabase) || checkEmpty(mariadbUsername) || checkEmpty(mari
 }
 
 const sequelize = new Sequelize(mariadbDatabase, mariadbUsername, mariadbPassword, {
-    host: 'localhost',
+    host: '0.0.0.0',
     dialect: 'mariadb',
     port: 3306,
     pool: {
